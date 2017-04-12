@@ -20,6 +20,8 @@
 		6F2D5EA21E9E89AC0038FFF5 /* FEFlickrXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EA11E9E89AC0038FFF5 /* FEFlickrXMLParser.m */; };
 		6F2D5EA51E9E8E120038FFF5 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5EA41E9E8E120038FFF5 /* Secrets.plist */; };
 		6F2D5EA71E9E8FEE0038FFF5 /* Configurations.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5EA61E9E8FEE0038FFF5 /* Configurations.plist */; };
+		6F2D5EAC1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EAA1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.m */; };
+		6F2D5EAD1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5EAB1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +67,9 @@
 		6F2D5EA11E9E89AC0038FFF5 /* FEFlickrXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEFlickrXMLParser.m; sourceTree = "<group>"; };
 		6F2D5EA41E9E8E120038FFF5 /* Secrets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
 		6F2D5EA61E9E8FEE0038FFF5 /* Configurations.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Configurations.plist; sourceTree = "<group>"; };
+		6F2D5EA91E9E9D730038FFF5 /* FEPhotoCollectionViewCell.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEPhotoCollectionViewCell.h; sourceTree = "<group>"; };
+		6F2D5EAA1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEPhotoCollectionViewCell.m; sourceTree = "<group>"; };
+		6F2D5EAB1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FEPhotoCollectionViewCell.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -115,6 +120,7 @@
 		6F2D5E551E9E7B0C0038FFF5 /* Flickr Explorer */ = {
 			isa = PBXGroup;
 			children = (
+				6F2D5EA81E9E9CDD0038FFF5 /* Views */,
 				6F2D5EA31E9E8DD20038FFF5 /* Settings */,
 				6F2D5E891E9E7DB70038FFF5 /* Controllers */,
 				6F2D5E8C1E9E7DB70038FFF5 /* DataServices */,
@@ -227,6 +233,16 @@
 			path = Settings;
 			sourceTree = "<group>";
 		};
+		6F2D5EA81E9E9CDD0038FFF5 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6F2D5EA91E9E9D730038FFF5 /* FEPhotoCollectionViewCell.h */,
+				6F2D5EAA1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.m */,
+				6F2D5EAB1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -333,6 +349,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F2D5EAD1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib in Resources */,
 				6F2D5E961E9E86F30038FFF5 /* Launch Screen.storyboard in Resources */,
 				6F2D5EA71E9E8FEE0038FFF5 /* Configurations.plist in Resources */,
 				6F2D5EA51E9E8E120038FFF5 /* Secrets.plist in Resources */,
@@ -363,6 +380,7 @@
 			files = (
 				6F2D5E921E9E7DF80038FFF5 /* FESearchViewController.m in Sources */,
 				6F2D5E9F1E9E89910038FFF5 /* FEFlickrAPIDataProvider.m in Sources */,
+				6F2D5EAC1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.m in Sources */,
 				6F2D5E991E9E88570038FFF5 /* FESearchLogic.m in Sources */,
 				6F2D5E5B1E9E7B0C0038FFF5 /* AppDelegate.m in Sources */,
 				6F2D5EA21E9E89AC0038FFF5 /* FEFlickrXMLParser.m in Sources */,
