@@ -18,6 +18,7 @@
 		6F2D5E9C1E9E888A0038FFF5 /* FEPhotoDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E9B1E9E888A0038FFF5 /* FEPhotoDetailViewController.m */; };
 		6F2D5E9F1E9E89910038FFF5 /* FEFlickrAPIDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E9E1E9E89910038FFF5 /* FEFlickrAPIDataProvider.m */; };
 		6F2D5EA21E9E89AC0038FFF5 /* FEFlickrXMLParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EA11E9E89AC0038FFF5 /* FEFlickrXMLParser.m */; };
+		6F2D5EA51E9E8E120038FFF5 /* Secrets.plist in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5EA41E9E8E120038FFF5 /* Secrets.plist */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -61,6 +62,7 @@
 		6F2D5E9E1E9E89910038FFF5 /* FEFlickrAPIDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEFlickrAPIDataProvider.m; sourceTree = "<group>"; };
 		6F2D5EA01E9E89AC0038FFF5 /* FEFlickrXMLParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEFlickrXMLParser.h; sourceTree = "<group>"; };
 		6F2D5EA11E9E89AC0038FFF5 /* FEFlickrXMLParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEFlickrXMLParser.m; sourceTree = "<group>"; };
+		6F2D5EA41E9E8E120038FFF5 /* Secrets.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Secrets.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +113,7 @@
 		6F2D5E551E9E7B0C0038FFF5 /* Flickr Explorer */ = {
 			isa = PBXGroup;
 			children = (
+				6F2D5EA31E9E8DD20038FFF5 /* Settings */,
 				6F2D5E891E9E7DB70038FFF5 /* Controllers */,
 				6F2D5E8C1E9E7DB70038FFF5 /* DataServices */,
 				6F2D5E8F1E9E7DB70038FFF5 /* Models */,
@@ -211,6 +214,14 @@
 			children = (
 			);
 			path = Models;
+			sourceTree = "<group>";
+		};
+		6F2D5EA31E9E8DD20038FFF5 /* Settings */ = {
+			isa = PBXGroup;
+			children = (
+				6F2D5EA41E9E8E120038FFF5 /* Secrets.plist */,
+			);
+			path = Settings;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -320,6 +331,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6F2D5E961E9E86F30038FFF5 /* Launch Screen.storyboard in Resources */,
+				6F2D5EA51E9E8E120038FFF5 /* Secrets.plist in Resources */,
 				6F2D5E631E9E7B0C0038FFF5 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
