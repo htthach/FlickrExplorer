@@ -8,14 +8,28 @@
 
 #import "FESearchViewController.h"
 #import "FEPhotoCollectionViewCell.h"
-
+#import "FESearchLogic.h"
 #define FEPhotoCollectionViewCellIdentifier @"FEPhotoCollectionViewCellIdentifier"
 
 @interface FESearchViewController () <UICollectionViewDelegate, UICollectionViewDataSource>
-@property (nonatomic, strong) UICollectionView *collectionView;
+@property (nonatomic, strong) UICollectionView  *collectionView;
+@property (nonatomic, strong) FESearchLogic     *searchLogic;
 @end
 
 @implementation FESearchViewController
+
+/**
+ Initialize with basic search logic
+
+ @return an instance of FESearchViewController
+ */
+-(instancetype)init{
+    self = [super init];
+    if (self) {
+        self.searchLogic = [FESearchLogic new];
+    }
+    return self;
+}
 
 #pragma mark - view life cycle
 -(void)loadView{
@@ -33,6 +47,10 @@
     [self setupCollectionView];
 }
 
+-(void)viewWillAppear:(BOOL)animated{
+    [super viewWillAppear:animated];
+    [self.searchLogic searchPhotoPhotoWithText:@"flower dome"];
+}
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.

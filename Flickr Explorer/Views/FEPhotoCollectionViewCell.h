@@ -16,4 +16,6 @@
  *  @return the nib of FEPhotoCollectionViewCell
  */
 + (UINib *)nib;
+
+
 @end

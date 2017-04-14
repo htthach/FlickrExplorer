@@ -10,4 +10,11 @@
 
 @interface FESearchLogic : NSObject
 
+
+/**
+ Start searching for photo given the input text from user
+ 
+ @param text the input text to search photo
+ */
+-(void) searchPhotoPhotoWithText:(NSString*) text;
 @end

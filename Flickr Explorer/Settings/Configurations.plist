@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple Computer//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<!--
-   Configurations.plist
-   Flickr Explorer
-
-   Created by Tinh Thach Hinh on 13/4/17.
-   Copyright (c) 2017 Hinh Tinh Thach. All rights reserved.
--->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-    <dict>
-    
-    </dict>
+<dict>
+	<key>FlickrBaseUrl</key>
+	<string>https://api.flickr.com/services/</string>
+</dict>
 </plist>
