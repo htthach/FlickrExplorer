@@ -12,7 +12,6 @@
 #import "FESearchResult.h"
 
 @interface FESearchLogic ()
-@property (nonatomic, strong) id<FEDataProvider> dataProvider;
 @property (nonatomic, strong) FESearchResult *searchResult;
 @end
 @implementation FESearchLogic

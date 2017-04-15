@@ -10,13 +10,20 @@
 #import "FEPhotoCollectionViewCell.h"
 #import "FESearchLogic.h"
 #import "FEHelper.h"
+#import "FEPhoto.h"
+#import "FEPhotoDetailViewController.h"
 
-#define FEPhotoCollectionViewCellIdentifier @"FEPhotoCollectionViewCellIdentifier"
+static NSString * const FEPhotoCollectionViewCellIdentifier = @"FEPhotoCollectionViewCellIdentifier";
+static int const FE_GRID_COLUMN_COUNT = 3;
+static CGFloat const FE_GRID_MARGIN   = 5;
+@interface FESearchViewController () <UICollectionViewDelegate, UICollectionViewDataSource, UISearchBarDelegate, FESearchLogicDelegate>
 
-@interface FESearchViewController () <UICollectionViewDelegate, UICollectionViewDataSource, FESearchLogicDelegate>
-@property (nonatomic, strong) UICollectionView      *collectionView;
 @property (nonatomic, strong) FESearchLogic         *searchLogic;
 @property (nonatomic, strong) id<FEImageProvider>   imageProvider;
+//views
+@property (nonatomic, strong) UISearchBar           *searchBar;
+@property (nonatomic, strong) UICollectionView      *collectionView;
+@property (nonatomic, strong) UIView                *tagContainer;
 @end
 
 @implementation FESearchViewController
@@ -49,8 +56,8 @@
 
 #pragma mark - view life cycle
 -(void)loadView{
-    UIView *view = [UIView new];//[[UIView alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
-    view.backgroundColor = [UIColor yellowColor];
+    //create a basic view with a UICollectionView as subview
+    UIView *view = [UIView new];
     self.collectionView = [[UICollectionView alloc]initWithFrame:CGRectZero collectionViewLayout:[UICollectionViewFlowLayout new]];
     [view addSubview:self.collectionView];
     self.view = view;
@@ -61,11 +68,11 @@
     // Do any additional setup after loading the view.
     [self setupConstraints];
     [self setupCollectionView];
+    [self setupSearchBar];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
     [super viewWillAppear:animated];
-    [self.searchLogic searchPhotoPhotoWithText:@"flower dome"];
 }
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
@@ -87,21 +94,55 @@
 }
 
 -(void) setupCollectionView{
+    self.collectionView.backgroundColor = [UIColor whiteColor];
     self.collectionView.dataSource = self;
     self.collectionView.delegate = self;
     [self.collectionView registerNib:[FEPhotoCollectionViewCell nib] forCellWithReuseIdentifier:FEPhotoCollectionViewCellIdentifier];
 }
+-(void) setupSearchBar{
+    self.searchBar = [UISearchBar new];
+    self.searchBar.placeholder = NSLocalizedString(@"Search Photo", @"Search bar title");
+    self.navigationItem.titleView = self.searchBar;
+    self.searchBar.searchBarStyle = UISearchBarStyleProminent;
+    self.searchBar.barTintColor = self.navigationController.navigationBar.barTintColor;
+    self.searchBar.delegate = self;
+    self.searchBar.translucent = NO;
+    [self.searchBar becomeFirstResponder];
+}
+
+-(void) showDetailForPhoto:(FEPhoto*) photo{
+    [self.navigationController pushViewController:[FEPhotoDetailViewController viewControllerWithPhoto:photo
+                                                                                         dataProvider:self.searchLogic.dataProvider
+                                                                                        imageProvider:self.imageProvider]
+                                         animated:YES];
+}
 #pragma mark - search logic delegate
 -(void)searchLogicDidUpdateResult{
+    [self.searchBar sizeToFit];
     [self.collectionView reloadData];
 }
 -(void) searchLogicEncounteredError:(NSError *)error{
     //for now we just simply display the message in the error object
     [FEHelper showError:error inViewController:self];
 }
-#pragma mark - collection view delegate
 
-#pragma mark - collection view data source
+#pragma mark - UICollectionViewDelegate
+
+- (UIEdgeInsets)collectionView:(UICollectionView*)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section
+{
+    return UIEdgeInsetsMake(FE_GRID_MARGIN, FE_GRID_MARGIN, FE_GRID_MARGIN, FE_GRID_MARGIN);
+}
+
+- (CGSize)collectionView:(UICollectionView*)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath*)indexPath
+{
+    //calculate size to fit FE_GRID_COLUMN_COUNT columns. Round down to int
+    int squareSide = (collectionView.frame.size.width / FE_GRID_COLUMN_COUNT) - 2*FE_GRID_MARGIN;
+    return CGSizeMake(squareSide, squareSide);
+}
+-(void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath{
+    [self showDetailForPhoto:[self.searchLogic photoToDisplayAtIndex:indexPath.row]];
+}
+#pragma mark - UICollectionViewDataSource
 -(NSInteger)numberOfSectionsInCollectionView:(UICollectionView *)collectionView{
     return 1;
 }
@@ -113,5 +154,20 @@
     FEPhotoCollectionViewCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:FEPhotoCollectionViewCellIdentifier forIndexPath:indexPath];
     [cell showPhoto:[self.searchLogic photoToDisplayAtIndex:indexPath.row] usingImageProvider:self.imageProvider];
     return cell;
+}
+
+#pragma mark - UISearchBarDelegate
+- (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
+    [self.searchLogic searchPhotoPhotoWithText:searchBar.text];
+    self.searchBar.showsCancelButton = NO;
+    [searchBar resignFirstResponder];
+}
+
+- (void)searchBarTextDidBeginEditing:(UISearchBar *)searchBar {
+    self.searchBar.showsCancelButton = YES;
+}
+-(void)searchBarCancelButtonClicked:(UISearchBar *)searchBar{
+    self.searchBar.showsCancelButton = NO;
+    [searchBar resignFirstResponder];
 }
 @end

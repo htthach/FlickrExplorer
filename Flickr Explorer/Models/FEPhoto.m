@@ -21,6 +21,7 @@
     [keyMap setObject:@"isPublic" forKey:@"ispublic"];
     [keyMap setObject:@"isFriend" forKey:@"isfriend"];
     [keyMap setObject:@"isFamily" forKey:@"isfamily"];
+    [keyMap setObject:@"photoDescription" forKey:@"description"];
     return keyMap;
 }
 
@@ -35,5 +36,14 @@
         return [self.photoId isEqualToString:otherPhoto.photoId];
     }
     return NO;
+}
+
+/**
+ Separate tags properties into an array of tags
+ 
+ @return an array of tags
+ */
+-(NSArray*) tagArray{
+    return [self.tags componentsSeparatedByString:@" "];
 }
 @end

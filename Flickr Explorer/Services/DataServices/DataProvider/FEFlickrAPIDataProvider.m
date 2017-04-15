@@ -11,17 +11,27 @@
 #import "FEJsonParser.h"
 #import "FEConfigurations.h"
 #import "FESearchResult.h"
+#import "FEPhotoInfoResult.h"
 #import "FEHelper.h"
 #import "FEMemoryCache.h"
 
 static int const FE_NETWORK_ERROR_CODE_INVALID_PARAM        = 400;
 static NSString * const FE_NETWORK_ERROR_DOMAIN             = @"com.flickrexplorer.ios.network";
 
+//param name
 static NSString * const FE_ENDPOINT_PARAM_API_KEY           = @"api_key";
 static NSString * const FE_ENDPOINT_PARAM_FORMAT            = @"format";
 static NSString * const FE_ENDPOINT_PARAM_NO_CALLBACK       = @"nojsoncallback";
 static NSString * const FE_ENDPOINT_PARAM_METHOD            = @"method";
 static NSString * const FE_ENDPOINT_PARAM_TEXT              = @"text";
+static NSString * const FE_ENDPOINT_PARAM_EXTRA             = @"extras";
+static NSString * const FE_ENDPOINT_PARAM_PHOTO_ID          = @"photo_id";
+static NSString * const FE_ENDPOINT_PARAM_SECRET            = @"secret";
+
+//param value
+
+static NSString * const FE_ENDPOINT_VALUE_TAG               = @"tags";
+
 
 //flick URL template
 static NSString * const FE_FLICKR_URL_TEMPLATE              = @"https://farm{farmId}.staticflickr.com/{serverId}/{photoId}_{secret}_{size}.jpg";
@@ -33,7 +43,7 @@ static NSString * const FE_FLICKR_URL_TEMPLATE_SIZE_KEY     = @"{size}";
 
 //flickr api methods
 static NSString * const FE_API_SEARCH_METHOD                = @"flickr.photos.search";
-
+static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.getInfo";
 
 @interface FEFlickrAPIDataProvider () <NSURLSessionDelegate>
 @property (nonatomic, strong) id<FEDataToObjectParser>  parser;
@@ -140,7 +150,9 @@ static NSString * const FE_API_SEARCH_METHOD                = @"flickr.photos.se
                                          if (error) {
                                              //data task error, abort
                                              if (fail) {
-                                                 fail(error);
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     fail(error);
+                                                 });
                                              }
                                              return;
                                          }
@@ -195,32 +207,29 @@ static NSString * const FE_API_SEARCH_METHOD                = @"flickr.photos.se
                                                  completionHandler:^(NSData *data,
                                                                      NSURLResponse *response,
                                                                      NSError *error) {
-                                             if (error) {
+                                             if (!data || error) {
                                                  //download error, abort
+                                                 
                                                  if (fail) {
-                                                     fail(error);
+                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                         fail(error);
+                                                     });
                                                  }
                                                  return;
                                              }
                                              
                                              //download completed, convert to image
-                                             if (data) {
-                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                     UIImage *image = [UIImage imageWithData:data];
-                                                     [self.imageCache cacheObject:image ofSize:[data length] forKey:imageUrl.absoluteString];
+                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                 UIImage *image = [UIImage imageWithData:data];
+                                                 [self.imageCache cacheObject:image ofSize:[data length] forKey:imageUrl.absoluteString];
+                                                 
+                                                 if (success) {
                                                      dispatch_async(dispatch_get_main_queue(), ^{
-                                                         if (image && success) {
-                                                             //converted successfully
-                                                             success(image);
-                                                         }
+                                                         success(image);
+                                                     
                                                      });
-                                                 });
-                                             }
-                                             
-                                             //fail to convert
-                                             if (fail) {
-                                                 fail(error);
-                                             }
+                                                 }
+                                             });
                                          }];
     [dataTask resume];
 }
@@ -262,6 +271,8 @@ static NSString * const FE_API_SEARCH_METHOD                = @"flickr.photos.se
 
 -(NSString*) flickrImageSizeStringFromPhotoSize:(FEPhotoSize) size{
     switch (size) {
+        case FEPhotoSizeThumb:
+            return @"t";
         case FEPhotoSizeSmall:
             return @"m";
         case FEPhotoSizeMedium:
@@ -295,7 +306,7 @@ static NSString * const FE_API_SEARCH_METHOD                = @"flickr.photos.se
  @return an error object to describe the "invalid request param" error
  */
 +(NSError*) invalidRequestParamError{
-    NSError *error = [[NSError alloc] initWithDomain:FE_NETWORK_ERROR_DOMAIN code:FE_NETWORK_ERROR_CODE_INVALID_PARAM userInfo:[NSDictionary dictionaryWithObject:@"Invalid Request Parameter" forKey:NSLocalizedDescriptionKey]];
+    NSError *error = [[NSError alloc] initWithDomain:FE_NETWORK_ERROR_DOMAIN code:FE_NETWORK_ERROR_CODE_INVALID_PARAM userInfo:[NSDictionary dictionaryWithObject:NSLocalizedString(@"Invalid Request Parameter", @"Parameter error message") forKey:NSLocalizedDescriptionKey]];
     return error;
 }
 #pragma mark - Implementation of FEDataProvider
@@ -320,12 +331,42 @@ static NSString * const FE_API_SEARCH_METHOD                = @"flickr.photos.se
     }
     
     [self GET:[self endPointForParams:@{FE_ENDPOINT_PARAM_METHOD:FE_API_SEARCH_METHOD,
-                                        FE_ENDPOINT_PARAM_TEXT:text}]
+                                        FE_ENDPOINT_PARAM_TEXT:text,
+                                        FE_ENDPOINT_PARAM_EXTRA:FE_ENDPOINT_VALUE_TAG
+                                        }
+               ]
    returnType:[FESearchResult class]
       success:success
          fail:fail];
 }
 
+/**
+ Load more info about a particular photo
+ 
+ @param photo   photo to load info of
+ @param success success callback block
+ @param fail    fail callback block
+ */
+-(void) loadInfoForPhoto:(FEPhoto*) photo
+                 success:(void (^)(FEPhotoInfoResult *infoResult)) success
+                    fail:(void (^)(NSError *error)) fail{
+    //check if valid parameters
+    if ([FEHelper isEmptyString:photo.photoId]) {
+        if (fail) {
+            fail ([FEFlickrAPIDataProvider invalidRequestParamError]);
+        }
+        return;
+    }
+    
+    [self GET:[self endPointForParams:@{FE_ENDPOINT_PARAM_METHOD:FE_API_PHOTO_INFO_METHOD,
+                                        FE_ENDPOINT_PARAM_PHOTO_ID:photo.photoId,
+                                        FE_ENDPOINT_PARAM_SECRET:photo.secret?:@"" //secret is optional
+                                        }
+               ]
+   returnType:[FEPhotoInfoResult class]
+      success:success
+         fail:fail];
+}
 #pragma mark - Implementation of FEImageProvider
 
 /**

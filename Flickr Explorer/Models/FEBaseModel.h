@@ -24,6 +24,15 @@
  */
 -(instancetype) initWithDictionary:(NSDictionary*) dictionary error:(NSError**) error;
 
+
+/**
+ Initialze from a string. Default implementation in base class is to do nothing
+
+ @param  string the string to init this object
+ @return instance of this class
+ */
+-(instancetype) initWithString:(NSString*) string;
+
 #pragma mark - to be inherit
 
 /**

@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		6F1B40C11EA250C40029C586 /* FEPhotoDetailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40BF1EA250C40029C586 /* FEPhotoDetailViewController.m */; };
 		6F1B40C21EA250C40029C586 /* FEPhotoDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F1B40C01EA250C40029C586 /* FEPhotoDetailViewController.xib */; };
+		6F1B40C51EA26E770029C586 /* FEPhotoInfoResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40C41EA26E770029C586 /* FEPhotoInfoResult.m */; };
+		6F1B40C81EA276C30029C586 /* FEContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40C71EA276C30029C586 /* FEContent.m */; };
 		6F2D5E581E9E7B0C0038FFF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E571E9E7B0C0038FFF5 /* main.m */; };
 		6F2D5E5B1E9E7B0C0038FFF5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E5A1E9E7B0C0038FFF5 /* AppDelegate.m */; };
 		6F2D5E631E9E7B0C0038FFF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5E621E9E7B0C0038FFF5 /* Assets.xcassets */; };
@@ -55,6 +57,10 @@
 		6F1B40BE1EA250C40029C586 /* FEPhotoDetailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEPhotoDetailViewController.h; sourceTree = "<group>"; };
 		6F1B40BF1EA250C40029C586 /* FEPhotoDetailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEPhotoDetailViewController.m; sourceTree = "<group>"; };
 		6F1B40C01EA250C40029C586 /* FEPhotoDetailViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = FEPhotoDetailViewController.xib; sourceTree = "<group>"; };
+		6F1B40C31EA26E770029C586 /* FEPhotoInfoResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEPhotoInfoResult.h; sourceTree = "<group>"; };
+		6F1B40C41EA26E770029C586 /* FEPhotoInfoResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEPhotoInfoResult.m; sourceTree = "<group>"; };
+		6F1B40C61EA276C30029C586 /* FEContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEContent.h; sourceTree = "<group>"; };
+		6F1B40C71EA276C30029C586 /* FEContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEContent.m; sourceTree = "<group>"; };
 		6F2D5E531E9E7B0C0038FFF5 /* Flickr Explorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flickr Explorer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F2D5E571E9E7B0C0038FFF5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6F2D5E591E9E7B0C0038FFF5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -236,6 +242,10 @@
 				6F8948161EA0CF200096B5A0 /* FEBaseModel.m */,
 				6F8948181EA0E6700096B5A0 /* FESearchResult.h */,
 				6F8948191EA0E6700096B5A0 /* FESearchResult.m */,
+				6F1B40C31EA26E770029C586 /* FEPhotoInfoResult.h */,
+				6F1B40C41EA26E770029C586 /* FEPhotoInfoResult.m */,
+				6F1B40C61EA276C30029C586 /* FEContent.h */,
+				6F1B40C71EA276C30029C586 /* FEContent.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -461,7 +471,9 @@
 			files = (
 				6F2D5E921E9E7DF80038FFF5 /* FESearchViewController.m in Sources */,
 				6F89480A1EA095610096B5A0 /* FEPhotoList.m in Sources */,
+				6F1B40C51EA26E770029C586 /* FEPhotoInfoResult.m in Sources */,
 				6F2D5EBE1EA090FB0038FFF5 /* FEJsonParser.m in Sources */,
+				6F1B40C81EA276C30029C586 /* FEContent.m in Sources */,
 				6F1B40C11EA250C40029C586 /* FEPhotoDetailViewController.m in Sources */,
 				6F8948071EA095530096B5A0 /* FEPhoto.m in Sources */,
 				6F8948141EA0C3D70096B5A0 /* FEHelper.m in Sources */,

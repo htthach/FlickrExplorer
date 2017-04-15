@@ -22,6 +22,7 @@
  This class will handle most of searching logic
  */
 @interface FESearchLogic : NSObject
+@property (nonatomic, strong) id<FEDataProvider> dataProvider;
 @property (weak) id<FESearchLogicDelegate> delegate;
 
 /**

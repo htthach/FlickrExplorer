@@ -29,6 +29,15 @@ static NSString * const FE_PARSING_ERROR_DOMAIN    = @"com.flickrexplorer.ios.mo
     }
     return self;
 }
+/**
+ Initialze from a string. Default implementation in base class is to do nothing
+ 
+ @param  string the string to init this object
+ @return instance of this class
+ */
+-(instancetype) initWithString:(NSString*) string{
+    return [super init];
+}
 #pragma mark - to be inherit
 
 /**
@@ -198,24 +207,26 @@ static NSString *getPropertyType(objc_property_t property) {
         
         //for simplicity only handle NSString, NSNumber, NSDictionary and NSArray
         
+        
         if ([childClass isSubclassOfClass:[NSString class]]) {
             if ([self respondsToSelector:NSSelectorFromString(subtitutedKey)])  {
                 if ([value isKindOfClass:[NSString class]]) {
                     [self setValue:value forKey:subtitutedKey];
                 }
                 else if ([value respondsToSelector:@selector(stringValue)]){
+                    //if server pass something else, we try to convert to string
                     [self setValue:[value stringValue] forKeyPath:subtitutedKey];
                 }
             }
             
         }
-        else if ( [childClass isSubclassOfClass:[NSNumber class]]){
-            
+        else if ([childClass isSubclassOfClass:[NSNumber class]]){
             if ([self respondsToSelector:NSSelectorFromString(subtitutedKey)])  {
                 if ([value isKindOfClass:[NSNumber class]]) {
                     [self setValue:value forKey:subtitutedKey];
                 }
                 else if ([value isKindOfClass:[NSString class]]){
+                    //if server pass string, we try to convert to number
                     [self setValue:[formatter numberFromString:value] forKey:subtitutedKey];
                 }
             }
@@ -240,6 +251,14 @@ static NSString *getPropertyType(objc_property_t property) {
                 
             }
         }
+        //extra weird case for flickr parsing because sometimes they return same attributes under different format
+        else if ([childClass isSubclassOfClass:[FEBaseModel class]] && [value isKindOfClass:[NSString class]]){
+            if ([self respondsToSelector:NSSelectorFromString(subtitutedKey)])  {
+                id childObject = [[childClass alloc] initWithString:value];
+                [self setValue:childObject
+                        forKey:subtitutedKey];
+            }
+        }
     }
     
 }
@@ -250,7 +269,7 @@ static NSString *getPropertyType(objc_property_t property) {
  @return an error object to describe the parsing error. For simplicity, at the moment just return a generic error
  */
 +(NSError*) genericParsingError{
-    NSError *error = [[NSError alloc] initWithDomain:FE_PARSING_ERROR_DOMAIN code:FE_PARSING_ERROR_CODE userInfo:[NSDictionary dictionaryWithObject:@"Json and object structure mismatch" forKey:NSLocalizedDescriptionKey]];
+    NSError *error = [[NSError alloc] initWithDomain:FE_PARSING_ERROR_DOMAIN code:FE_PARSING_ERROR_CODE userInfo:[NSDictionary dictionaryWithObject:NSLocalizedString(@"Json and object structure mismatch", @"Data parsing error message") forKey:NSLocalizedDescriptionKey]];
     return error;
 }
 

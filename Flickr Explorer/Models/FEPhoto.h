@@ -8,7 +8,9 @@
 
 #import <Foundation/Foundation.h>
 #import "FEBaseModel.h"
+#import "FEContent.h"
 typedef NS_ENUM(NSInteger, FEPhotoSize) {
+    FEPhotoSizeThumb,
     FEPhotoSizeSmall,
     FEPhotoSizeMedium,
     FEPhotoSizeLarge,
@@ -21,10 +23,12 @@ typedef NS_ENUM(NSInteger, FEPhotoSize) {
 @property (nonatomic, copy) NSString  *secret;
 @property (nonatomic, copy) NSString  *server;
 @property (nonatomic, copy) NSString  *farm;
-@property (nonatomic, copy) NSString  *title;
+@property (nonatomic, strong) FEContent  *title;
 @property (nonatomic, copy) NSNumber  *isPublic;
 @property (nonatomic, copy) NSNumber  *isFriend;
 @property (nonatomic, copy) NSNumber  *isFamily;
+@property (nonatomic, copy) NSString  *tags;
+@property (nonatomic, strong) FEContent *photoDescription;
 
 
 /**
@@ -34,4 +38,12 @@ typedef NS_ENUM(NSInteger, FEPhotoSize) {
  @return YES if both have same ID.
  */
 -(BOOL) isSamePhotoAs:(FEPhoto*) otherPhoto;
+
+
+/**
+ Separate tags properties into an array of tags
+
+ @return an array of tags
+ */
+-(NSArray*) tagArray;
 @end

@@ -8,7 +8,8 @@
 
 #import <Foundation/Foundation.h>
 @class FESearchResult;
-
+@class FEPhoto;
+@class FEPhotoInfoResult;
 @protocol FEDataProvider <NSObject>
 /**
  Search Flickr API for photos matching some free text
@@ -21,4 +22,15 @@
                     success:(void (^)(FESearchResult *searchResult)) success
                        fail:(void (^)(NSError *error)) fail;
 
+
+/**
+ Load more info about a particular photo
+
+ @param photo   photo to load info of
+ @param success success callback block
+ @param fail    fail callback block
+ */
+-(void) loadInfoForPhoto:(FEPhoto*) photo
+                 success:(void (^)(FEPhotoInfoResult *infoResult)) success
+                    fail:(void (^)(NSError *error)) fail;
 @end
