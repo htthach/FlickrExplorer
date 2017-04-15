@@ -7,7 +7,7 @@
 //
 
 #import <Foundation/Foundation.h>
-
+#import <UIKit/UIKit.h>
 @interface FEHelper : NSObject
 
 
@@ -19,4 +19,20 @@
  */
 +(BOOL) isEmptyString:(NSString*) string;
 
+
+/**
+ Simple error handling by displaying everything to user.
+
+ @param error error to show
+ @param viewController the view controller to show this error message in
+ */
++(void) showError:(NSError*) error inViewController:(UIViewController*) viewController;
+
+
+/**
+ Placeholder for missing image
+
+ @return placeholder for missing image
+ */
++(UIImage*) imagePlaceholder;
 @end

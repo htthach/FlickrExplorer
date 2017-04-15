@@ -23,7 +23,7 @@ static NSString * const FE_PARSING_ERROR_DOMAIN                 = @"com.flickrex
  */
 -(void) parseData:(NSData*) data intoObjectOfClass:(Class) targetClass complete:(void (^)(id resultObject, NSError *parseError)) complete{
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-        //step 1 data to json
+        //step 1 nsdata to json
         NSError *parseError = nil;
         id responseJson = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
         if(parseError){
@@ -36,6 +36,8 @@ static NSString * const FE_PARSING_ERROR_DOMAIN                 = @"com.flickrex
         }
         
         //step 2 json to object
+        NSLog(@"Parsing class %@ from data %@", targetClass, responseJson);
+        
         id responseObject = [self parsedObjectFromJsonObject:responseJson basedOnType:targetClass error:&parseError];
         dispatch_async(dispatch_get_main_queue(), ^{
             if (complete) {

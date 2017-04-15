@@ -8,19 +8,29 @@
 
 #import "AppDelegate.h"
 #import "FESearchViewController.h"
+#import "FEFlickrAPIDataProvider.h"
+
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
 
+-(UIViewController*) demoHome{
+    //For now the first thing user see is the Search Page under a navigation controller
+    FESearchViewController *searchVC = [FESearchViewController viewControllerWithDataProvider:[FEFlickrAPIDataProvider sharedDefaultProvider]
+                                                                                imageProvider:[FEFlickrAPIDataProvider sharedDefaultProvider]];
+    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:searchVC];
+    return navigationController;
+}
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
     self.window = [UIWindow new];
     
-    //For now the first thing user see is the Search Page
-    [self.window setRootViewController:[FESearchViewController new]];
+    //set home page for this code demo
+    [self.window setRootViewController:[self demoHome]];
+    
     [self.window makeKeyAndVisible];
     return YES;
 }

@@ -8,18 +8,20 @@
 
 #import "FEConfigurations.h"
 //secrets
-#define FE_SECRET_FILE_NAME @"Secrets"
-#define FE_SECRET_FILE_EXTENSION @"plist"
 
-#define FE_SECRET_KEY_FLICKR_API_KEY @"FlickrAPIKey"
-#define FE_SECRET_KEY_FLICKR_API_SECRET @"FlickrAPISecret"
+static NSString * const FE_SECRET_FILE_NAME             = @"Secrets";
+static NSString * const FE_SECRET_FILE_EXTENSION        = @"plist";
+
+static NSString * const FE_SECRET_KEY_FLICKR_API_KEY    = @"FlickrAPIKey";
+static NSString * const FE_SECRET_KEY_FLICKR_API_SECRET = @"FlickrAPISecret";
 
 //configurations
-#define FE_CONFIGURATION_FILE_NAME @"Configurations"
-#define FE_CONFIGURATION_FILE_EXTENSION @"plist"
+static NSString * const FE_CONFIGURATION_FILE_NAME          = @"Configurations";
+static NSString * const FE_CONFIGURATION_FILE_EXTENSION     = @"plist";
 
-#define FE_CONFIGURATION_KEY_FLICK_BASE_URL @"FlickrBaseUrl"
-
+static NSString * const FE_CONFIGURATION_KEY_FLICK_BASE_URL = @"FlickrBaseUrl";
+static NSString * const FE_CONFIGURATION_KEY_TO_CACHE_IMAGE = @"ToCacheImage";
+static NSString * const FE_CONFIGURATION_KEY_TO_CACHE_API_RESPONSE = @"ToCacheAPIResponse";
 @implementation FEConfigurations
 
 #pragma mark - file io
@@ -64,5 +66,23 @@
     NSString* result = [[FEConfigurations configDictionary] objectForKey:FE_CONFIGURATION_KEY_FLICK_BASE_URL];
     NSAssert(result, @"Missing Flickr API Base URL configuration");
     return result;
+}
+
+/**
+ Return YES if want to enable image caching
+ 
+ @return YES if want to enable image caching
+ */
++(BOOL) toCacheImage{
+    return [[[FEConfigurations configDictionary] objectForKey:FE_CONFIGURATION_KEY_TO_CACHE_IMAGE] boolValue];
+}
+
+/**
+ Return YES if want to enable api response caching
+ 
+ @return YES if want to enable api response caching
+ */
++(BOOL) toCacheAPIResponse{
+    return [[[FEConfigurations configDictionary] objectForKey:FE_CONFIGURATION_KEY_TO_CACHE_API_RESPONSE] boolValue];
 }
 @end

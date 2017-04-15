@@ -6,9 +6,6 @@
 //  Copyright © 2017 Hinh Tinh Thach. All rights reserved.
 //
 
-#ifndef FEStringToObjectParser_h
-#define FEStringToObjectParser_h
-
 @protocol FEDataToObjectParser <NSObject>
 
 
@@ -22,5 +19,3 @@
 -(void) parseData:(NSData*) data intoObjectOfClass:(Class) targetClass complete:(void (^)(id resultObject, NSError *parseError)) complete;
 
 @end
-
-#endif /* FEStringToObjectParser_h */

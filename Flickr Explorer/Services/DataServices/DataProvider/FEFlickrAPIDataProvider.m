@@ -12,32 +12,45 @@
 #import "FEConfigurations.h"
 #import "FESearchResult.h"
 #import "FEHelper.h"
+#import "FEMemoryCache.h"
 
-static int const FE_NETWORK_ERROR_CODE_INVALID_PARAM    = 400;
-static NSString * const FE_NETWORK_ERROR_DOMAIN         = @"com.flickrexplorer.ios.network";
+static int const FE_NETWORK_ERROR_CODE_INVALID_PARAM        = 400;
+static NSString * const FE_NETWORK_ERROR_DOMAIN             = @"com.flickrexplorer.ios.network";
 
-static NSString * const FE_ENDPOINT_PARAM_API_KEY       = @"api_key";
-static NSString * const FE_ENDPOINT_PARAM_FORMAT        = @"format";
-static NSString * const FE_ENDPOINT_PARAM_NO_CALLBACK   = @"nojsoncallback";
-static NSString * const FE_ENDPOINT_PARAM_METHOD        = @"method";
-static NSString * const FE_ENDPOINT_PARAM_TEXT          = @"text";
+static NSString * const FE_ENDPOINT_PARAM_API_KEY           = @"api_key";
+static NSString * const FE_ENDPOINT_PARAM_FORMAT            = @"format";
+static NSString * const FE_ENDPOINT_PARAM_NO_CALLBACK       = @"nojsoncallback";
+static NSString * const FE_ENDPOINT_PARAM_METHOD            = @"method";
+static NSString * const FE_ENDPOINT_PARAM_TEXT              = @"text";
+
+//flick URL template
+static NSString * const FE_FLICKR_URL_TEMPLATE              = @"https://farm{farmId}.staticflickr.com/{serverId}/{photoId}_{secret}_{size}.jpg";
+static NSString * const FE_FLICKR_URL_TEMPLATE_FARM_KEY     = @"{farmId}";
+static NSString * const FE_FLICKR_URL_TEMPLATE_SERVER_KEY   = @"{serverId}";
+static NSString * const FE_FLICKR_URL_TEMPLATE_PHOTOID_KEY  = @"{photoId}";
+static NSString * const FE_FLICKR_URL_TEMPLATE_SECRET_KEY   = @"{secret}";
+static NSString * const FE_FLICKR_URL_TEMPLATE_SIZE_KEY     = @"{size}";
+
 //flickr api methods
-static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search";
+static NSString * const FE_API_SEARCH_METHOD                = @"flickr.photos.search";
 
 
 @interface FEFlickrAPIDataProvider () <NSURLSessionDelegate>
-@property (nonatomic, strong) id<FEDataToObjectParser> parser;
-@property (nonatomic, strong) NSURL *baseURL;
-@property (nonatomic, strong) NSURLSession *session;
+@property (nonatomic, strong) id<FEDataToObjectParser>  parser;
+@property (nonatomic, strong) NSURL                     *baseURL;
+@property (nonatomic, strong) NSURLSession              *session;
+@property (nonatomic, strong) id<FEObjectCache>         apiResponseCache;
+@property (nonatomic, strong) id<FEObjectCache>         imageCache;
 @end
+
 @implementation FEFlickrAPIDataProvider
 
 /**
- Convenient factory method to return a standard Flickr API data provider.
+ Convenient factory method to return a shared standard Flickr API data provider.
  
- @return an instance of FEFlickrAPIDataProvider
+ @return an singleton instance of FEFlickrAPIDataProvider
  */
-+(instancetype) defaultProvider{
++(instancetype) sharedDefaultProvider{
     static FEFlickrAPIDataProvider *sharedInstance = nil;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
@@ -50,6 +63,8 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
                       baseURL:(NSURL *)url
          sessionConfiguration:(NSURLSessionConfiguration *)configuration
                operationQueue:(NSOperationQueue *) operationQueue
+             apiResponseCache:(id<FEObjectCache>) apiResponseCache
+                   imageCache:(id<FEObjectCache>) imageCache
 {
     self = [super init];
     if (self) {
@@ -58,6 +73,8 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
         self.session = [NSURLSession sessionWithConfiguration:configuration
                                                      delegate:nil
                                                 delegateQueue:operationQueue];
+        self.apiResponseCache = apiResponseCache;
+        self.imageCache = imageCache;
     }
     return self;
 }
@@ -69,28 +86,29 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
  @return A default data provider with default config
  */
 +(instancetype) dataProviderWithDefaultConfig{
+    id<FEObjectCache> imageCache = nil;
+    id<FEObjectCache> apiResponseCache = nil;
+    
+    if ([FEConfigurations toCacheImage]) {
+        imageCache = [[FEMemoryCache alloc] initWithSize:FE_LARGE_CACHE_SIZE];
+    }
+    
+    if ([FEConfigurations toCacheAPIResponse]){
+        apiResponseCache = [[FEMemoryCache alloc] initWithSize:FE_SMALL_CACHE_SIZE];
+    }
+    
     return [[FEFlickrAPIDataProvider alloc] initWithParser:[FEJsonParser new]
                                                    baseURL:[FEFlickrAPIDataProvider flickrBaseURL]
                                       sessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
-                                            operationQueue:[[NSOperationQueue alloc] init]];
+                                            operationQueue:[[NSOperationQueue alloc] init]
+                                          apiResponseCache:apiResponseCache
+                                                imageCache:imageCache
+            ];
 }
 
 
-/**
- Return Flickr API base url from config file
 
- @return Flickr API base url from config file
- */
-+(NSURL*) flickrBaseURL{
-    NSString *baseUrlString = [FEConfigurations baseURLStringForFlickrAPI];
-    return [NSURL URLWithString:baseUrlString];
-}
-
-#pragma mark - private helper methods
--(NSURL*) urlForEndPoint:(NSString *) endpoint{
-    return [NSURL URLWithString:endpoint relativeToURL:self.baseURL];
-}
-
+#pragma mark - network helpers
 
 /**
  Simplified Http get method helper
@@ -104,7 +122,17 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
  returnType:(Class) returnType
     success:(void (^)(id responseObject)) success
        fail:(void (^)(NSError *error)) fail{
-
+    
+    //check if in cache
+    id cachedResponse = [self.apiResponseCache getObjectForKey:endpoint];
+    if (cachedResponse) {
+        if (success) {
+            success(cachedResponse);
+        }
+        return;
+    }
+    
+    //not cached, fetch new one
     NSURLSessionDataTask *dataTask = [self.session dataTaskWithURL: [self urlForEndPoint:endpoint]
                                                  completionHandler:^(NSData *data,
                                                                      NSURLResponse *response,
@@ -116,8 +144,8 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
                                              }
                                              return;
                                          }
+                                         NSUInteger dataSize = [data length];
                                          //data task completed, proceed to parse data
-                                         
                                          [self.parser parseData:data
                                               intoObjectOfClass:returnType
                                                        complete:^(id resultObject,
@@ -132,6 +160,7 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
                                              }
                                              
                                              //can parse successfully
+                                             [self.apiResponseCache cacheObject:resultObject ofSize:dataSize forKey:endpoint];
                                              if (success) {
                                                  success(resultObject);
                                              }
@@ -141,6 +170,74 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
     [dataTask resume];
 }
 
+/**
+ Simplified image download helper with caching
+ 
+ @param imageUrl url of the image to download
+ @param success success call back block
+ @param fail fail call back block
+ */
+-(void) downloadImageFromUrl:(NSURL*) imageUrl
+    success:(void (^)(UIImage *image)) success
+       fail:(void (^)(NSError *error)) fail{
+    
+    //check if in cache
+    id cachedResponse = [self.apiResponseCache getObjectForKey:imageUrl.absoluteString];
+    if (cachedResponse) {
+        if (success) {
+            success(cachedResponse);
+        }
+        return;
+    }
+    
+    //not cached, download new one
+    NSURLSessionDataTask *dataTask = [self.session dataTaskWithURL: imageUrl
+                                                 completionHandler:^(NSData *data,
+                                                                     NSURLResponse *response,
+                                                                     NSError *error) {
+                                             if (error) {
+                                                 //download error, abort
+                                                 if (fail) {
+                                                     fail(error);
+                                                 }
+                                                 return;
+                                             }
+                                             
+                                             //download completed, convert to image
+                                             if (data) {
+                                                 dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+                                                     UIImage *image = [UIImage imageWithData:data];
+                                                     [self.imageCache cacheObject:image ofSize:[data length] forKey:imageUrl.absoluteString];
+                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                         if (image && success) {
+                                                             //converted successfully
+                                                             success(image);
+                                                         }
+                                                     });
+                                                 });
+                                             }
+                                             
+                                             //fail to convert
+                                             if (fail) {
+                                                 fail(error);
+                                             }
+                                         }];
+    [dataTask resume];
+}
+#pragma mark - url construction helpers
+/**
+ Return Flickr API base url from config file
+ 
+ @return Flickr API base url from config file
+ */
++(NSURL*) flickrBaseURL{
+    NSString *baseUrlString = [FEConfigurations baseURLStringForFlickrAPI];
+    return [NSURL URLWithString:baseUrlString];
+}
+
+-(NSURL*) urlForEndPoint:(NSString *) endpoint{
+    return [NSURL URLWithString:endpoint relativeToURL:self.baseURL];
+}
 
 /**
  Constructing the endpoint following Flickr API documentation. Without the base url of course E.g https://api.flickr.com/services/rest/?method=flickr.test.echo&name=value
@@ -163,6 +260,34 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
     return components.URL.absoluteString;
 }
 
+-(NSString*) flickrImageSizeStringFromPhotoSize:(FEPhotoSize) size{
+    switch (size) {
+        case FEPhotoSizeSmall:
+            return @"m";
+        case FEPhotoSizeMedium:
+            return @"z";
+        case FEPhotoSizeLarge:
+            return @"b";
+        case FEPhotoSizeOriginal:
+            return @"o";
+    }
+}
+/**
+ Construct image url based on Flickr API documentation https://www.flickr.com/services/api/misc.urls.html
+ 
+ @param photo detail of the photo
+ @param size size to fetch
+ @return the URL to download the image from
+ */
+-(NSURL*) flickrImageUrlFromPhoto:(FEPhoto*) photo size:(FEPhotoSize) size{
+    NSString *urlString = [FE_FLICKR_URL_TEMPLATE stringByReplacingOccurrencesOfString:FE_FLICKR_URL_TEMPLATE_FARM_KEY withString:photo.farm];
+    urlString = [urlString stringByReplacingOccurrencesOfString:FE_FLICKR_URL_TEMPLATE_SERVER_KEY withString:photo.server];
+    urlString = [urlString stringByReplacingOccurrencesOfString:FE_FLICKR_URL_TEMPLATE_PHOTOID_KEY withString:photo.photoId];
+    urlString = [urlString stringByReplacingOccurrencesOfString:FE_FLICKR_URL_TEMPLATE_SECRET_KEY withString:photo.secret];
+    urlString = [urlString stringByReplacingOccurrencesOfString:FE_FLICKR_URL_TEMPLATE_SIZE_KEY withString:[self flickrImageSizeStringFromPhotoSize:size]];
+    
+    return [NSURL URLWithString:urlString];
+}
 
 /**
  Construct an error object to describe the "invalid request param" error
@@ -173,7 +298,7 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
     NSError *error = [[NSError alloc] initWithDomain:FE_NETWORK_ERROR_DOMAIN code:FE_NETWORK_ERROR_CODE_INVALID_PARAM userInfo:[NSDictionary dictionaryWithObject:@"Invalid Request Parameter" forKey:NSLocalizedDescriptionKey]];
     return error;
 }
-#pragma mark - public request method
+#pragma mark - Implementation of FEDataProvider
 
 /**
  Search Flickr API for photos matching some free text
@@ -199,5 +324,23 @@ static NSString * const FE_API_SEARCH_METHOD            = @"flickr.photos.search
    returnType:[FESearchResult class]
       success:success
          fail:fail];
+}
+
+#pragma mark - Implementation of FEImageProvider
+
+/**
+ Download a photo from flickr
+ 
+ @param photo the photo object containing info about the photo to download. A cached version will be returned if downloaded this before.
+ @param size expected size to download
+ @param success success callback block
+ @param fail fail callback block
+ */
+-(void)downloadImageForPhoto:(FEPhoto *)photo
+                        size:(FEPhotoSize)size
+                     success:(void (^)(UIImage *))success
+                        fail:(void (^)(NSError *))fail{
+    NSURL *imageUrl = [self flickrImageUrlFromPhoto:photo size:size];
+    [self downloadImageFromUrl:imageUrl success:success fail:fail];
 }
 @end

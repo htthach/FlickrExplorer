@@ -18,6 +18,22 @@
 -(NSMutableDictionary *)getKeyMap{
     NSMutableDictionary *keyMap = [super getKeyMap];
     [keyMap setObject:@"photoId" forKey:@"id"];
+    [keyMap setObject:@"isPublic" forKey:@"ispublic"];
+    [keyMap setObject:@"isFriend" forKey:@"isfriend"];
+    [keyMap setObject:@"isFamily" forKey:@"isfamily"];
     return keyMap;
+}
+
+/**
+ Check if two photos are the same. Currently we only consider photo id
+ 
+ @param otherPhoto the photo to compare this to
+ @return YES if both have same ID.
+ */
+-(BOOL) isSamePhotoAs:(FEPhoto*) otherPhoto{
+    if (otherPhoto.photoId && self.photoId) {
+        return [self.photoId isEqualToString:otherPhoto.photoId];
+    }
+    return NO;
 }
 @end

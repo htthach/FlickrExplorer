@@ -7,31 +7,19 @@
 //
 
 #import <Foundation/Foundation.h>
-@class FESearchResult;
-
-
-/**
- Simplified data provider to talk to Flickr API
- */
-@interface FEFlickrAPIDataProvider : NSObject
+#import "FEDataProvider.h"
+#import "FEImageProvider.h"
 
 /**
- Convenient factory method to return a standard Flickr API data provider.
-
- @return an instance of FEFlickrAPIDataProvider
+ Simplified data and image provider to talk to Flickr API. For simplicity we implement both protocol in this class. Of course in real world we'll just split them up further.
  */
-+(instancetype) defaultProvider;
-
-
+@interface FEFlickrAPIDataProvider : NSObject <FEDataProvider, FEImageProvider>
 
 /**
- Search Flickr API for photos matching some free text
-
- @param text    the free text to search for
- @param success success callback block
- @param fail    failure callback block
+ Convenient factory method to return a shared standard Flickr API data provider.
+ 
+ @return an singleton instance of FEFlickrAPIDataProvider
  */
--(void) searchPhotoWithText:(NSString*) text
-                       success:(void (^)(FESearchResult *searchResult)) success
-                          fail:(void (^)(NSError *error)) fail;
++(instancetype) sharedDefaultProvider;
+
 @end

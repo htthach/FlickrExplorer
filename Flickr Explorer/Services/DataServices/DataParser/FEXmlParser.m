@@ -6,9 +6,9 @@
 //  Copyright © 2017 Hinh Tinh Thach. All rights reserved.
 //
 
-#import "FEFlickrXMLParser.h"
+#import "FEXmlParser.h"
 
-@implementation FEFlickrXMLParser
+@implementation FEXmlParser
 
 /**
  Parse data into object asynchronously
@@ -18,7 +18,7 @@
  @param complete    the completion block to be called after parsing complete.
  */
 -(void) parseData:(NSData*) data intoObjectOfClass:(Class) targetClass complete:(void (^)(id resultObject, NSError *parseError)) complete{
-    NSAssert(NO, @"Missing implementation in FEFlickrXMLParser for Flickr XML parser");
+    NSAssert(NO, @"Missing implementation in FEXmlParser for XML parser following Flickr format");
 }
 
 @end

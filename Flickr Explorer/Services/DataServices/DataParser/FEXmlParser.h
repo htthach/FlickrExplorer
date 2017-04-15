@@ -16,6 +16,6 @@
  If want to use XML for flickr, implement this parser.
  For demo purpose, I'll leave this class empty and use the JSON parser.
  */
-@interface FEFlickrXMLParser : NSObject <FEDataToObjectParser>
+@interface FEXmlParser : NSObject <FEDataToObjectParser>
 
 @end

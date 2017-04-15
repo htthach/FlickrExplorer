@@ -20,4 +20,20 @@
 
 //config
 +(NSString *) baseURLStringForFlickrAPI;
+
+
+/**
+ Return YES if want to enable image caching
+
+ @return YES if want to enable image caching
+ */
++(BOOL) toCacheImage;
+
+
+/**
+ Return YES if want to enable api response caching
+ 
+ @return YES if want to enable api response caching
+ */
++(BOOL) toCacheAPIResponse;
 @end
