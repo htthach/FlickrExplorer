@@ -13,6 +13,7 @@
 #import "FEPhotoList.h"
 #import "FELocationProvider.h"
 
+static int const FE_MIN_SEARCH_RESULT_FILL_PAGE = 30;
 typedef NS_ENUM(NSInteger, FESearchMode) {
     FESearchModeIdle     = 0,
     FESearchModeLocation = 1,
@@ -245,6 +246,7 @@ typedef NS_ENUM(NSInteger, FESearchMode) {
                                    }];
 }
 
+#pragma mark - search result manipulation
 /**
  Number of photo to show from search result
  
@@ -275,8 +277,12 @@ typedef NS_ENUM(NSInteger, FESearchMode) {
     self.currentFilter = tags;
     self.filteredResult = [self.searchResult resultFilteredWithTags: tags];
     [self.delegate searchLogicDidFilterResult];
+    
+    //if after filtering, we have too few results left, fetch more
+    if ([self.filteredResult.photos numberOfPhotos] < FE_MIN_SEARCH_RESULT_FILL_PAGE) {
+        [self fetchMoreSearchResult];
+    }
 }
-
 
 /**
  Return the most popular tag from the search result.
