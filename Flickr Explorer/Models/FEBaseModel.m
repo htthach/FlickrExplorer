@@ -88,7 +88,6 @@ static NSString *getPropertyType(objc_property_t property) {
     while ((attribute = strsep(&state, ",")) != NULL) {
         if (attribute[0] == 'T' && strlen(attribute)>4) {
             NSString *attr = [[NSString alloc] initWithData:[NSData dataWithBytes:(attribute + 3) length:strlen(attribute) - 4] encoding:NSUTF8StringEncoding];
-            //NSLog(@"%@", attr);
             finalAttr = attr;
             break;
             return attr;

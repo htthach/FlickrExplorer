@@ -43,7 +43,7 @@
 -(void) showPhoto:(FEPhoto*) photo usingImageProvider:(id<FEImageProvider>) imageProvider{
     self.photoToShow = photo;
     [imageProvider downloadImageForPhoto:photo
-                                    size:FEPhotoSizeThumb
+                                    size:FEPhotoSizeSmall
                                  success:^(UIImage *image) {
                                      //only update if we're still supposed to show the same downloaded photo
                                      if ([self.photoToShow isSamePhotoAs:photo]){

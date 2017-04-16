@@ -15,7 +15,7 @@
     return [UIColor colorWithRed:250.0/255 green:90.0/255 blue:150.0/255 alpha:1.0];
 }
 +(UIColor *) primaryColorLight{
-    return [UIColor colorWithRed:255.0/255 green:200.0/255 blue:235.0/255 alpha:1.0];
+    return [UIColor colorWithRed:255.0/255 green:220.0/255 blue:245.0/255 alpha:1.0];
 }
 +(UIColor *) secondaryColorDark{
     return [UIColor colorWithRed:75.0/255 green:90.0/255 blue:190.0/255 alpha:1.0];

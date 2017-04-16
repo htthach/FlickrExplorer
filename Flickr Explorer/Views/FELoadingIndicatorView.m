@@ -7,7 +7,7 @@
 //
 
 #import "FELoadingIndicatorView.h"
-
+#import "FEUITheme.h"
 @implementation FELoadingIndicatorView
 
 /**
@@ -22,7 +22,7 @@
     
     self = [super initWithFrame:centerFrame];
     if (self) {
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        self.backgroundColor = [[FEUITheme primaryColorDark] colorWithAlphaComponent:0.5];
         self.layer.cornerRadius = 6;
         self.autoresizingMask = UIViewAutoresizingFlexibleTopMargin
                                 | UIViewAutoresizingFlexibleBottomMargin
@@ -45,7 +45,7 @@
     
     self = [super initWithFrame:fullFrame];
     if (self) {
-        self.backgroundColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
+        self.backgroundColor = [[FEUITheme primaryColorDark] colorWithAlphaComponent:0.5];
         self.autoresizingMask = UIViewAutoresizingFlexibleWidth
                                 | UIViewAutoresizingFlexibleHeight;
         [parentView addSubview:self];

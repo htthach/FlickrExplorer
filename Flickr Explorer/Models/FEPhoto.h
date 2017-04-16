@@ -9,6 +9,7 @@
 #import <Foundation/Foundation.h>
 #import "FEBaseModel.h"
 #import "FEContent.h"
+#import "FEPeople.h"
 typedef NS_ENUM(NSInteger, FEPhotoSize) {
     FEPhotoSizeThumb,
     FEPhotoSizeSmall,
@@ -19,7 +20,6 @@ typedef NS_ENUM(NSInteger, FEPhotoSize) {
 
 @interface FEPhoto : FEBaseModel
 @property (nonatomic, copy) NSString  *photoId;
-@property (nonatomic, copy) NSString  *owner;
 @property (nonatomic, copy) NSString  *secret;
 @property (nonatomic, copy) NSString  *server;
 @property (nonatomic, copy) NSString  *farm;
@@ -29,7 +29,8 @@ typedef NS_ENUM(NSInteger, FEPhotoSize) {
 @property (nonatomic, copy) NSNumber  *isFamily;
 @property (nonatomic, copy) NSString  *tags;
 @property (nonatomic, strong) FEContent *photoDescription;
-
+@property (nonatomic, copy) NSNumber  *dateUploaded;
+@property (nonatomic, strong) FEPeople *owner;
 
 /**
  Check if two photos are the same. Currently we only consider photo id
@@ -54,4 +55,12 @@ typedef NS_ENUM(NSInteger, FEPhotoSize) {
  @return an array of tags
  */
 -(NSArray<NSString*>*) tagArray;
+
+
+/**
+ Return a summary of this photo
+
+ @return summary of this photo
+ */
+-(NSString*) summaryInfo;
 @end

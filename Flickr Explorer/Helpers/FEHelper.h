@@ -35,4 +35,13 @@
  @return placeholder for missing image
  */
 +(UIImage*) imagePlaceholder;
+
+
+/**
+ Return a formatted date string from a time stamp
+
+ @param timeStamp the time stamp to convert
+ @return the formatted date string
+ */
++(NSString*) formattedDateStringFromTimestamp:(NSNumber*) timeStamp;
 @end

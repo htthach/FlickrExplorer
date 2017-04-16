@@ -43,4 +43,18 @@
 +(UIImage*) imagePlaceholder{
     return [UIImage imageNamed:@"PhotoPlaceholder"];
 }
+
+/**
+ Return a formatted date string from a time stamp
+ 
+ @param timeStamp the time stamp to convert
+ @return the formatted date string
+ */
++(NSString*) formattedDateStringFromTimestamp:(NSNumber*) timeStamp{
+    NSDateFormatter* df = [[NSDateFormatter alloc] init];
+    [df setDateStyle:NSDateFormatterMediumStyle];
+    NSDate *date = [NSDate dateWithTimeIntervalSince1970: [timeStamp doubleValue]];
+    NSString* resultString = [df stringFromDate:date];
+    return resultString;
+}
 @end

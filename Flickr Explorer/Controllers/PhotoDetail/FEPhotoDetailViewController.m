@@ -50,8 +50,10 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self setupScrollView];
-    self.infoContainer.backgroundColor = [FEUITheme primaryColorDark];
+    self.infoContainer.backgroundColor = [FEUITheme primaryColorLight];
     self.loadingIndicator = [[FELoadingIndicatorView alloc] initFullyInside:self.infoContainer];
+    self.descriptionLabel.textColor = [FEUITheme primaryColorDark];
+    self.title = self.currentPhoto.title.content;
     [self loadPhotoInfo];
     [self loadImageForSize: FEPhotoSizeLarge];
 }
@@ -62,6 +64,7 @@
 }
 
 -(void) setupScrollView{
+    self.scrollView.backgroundColor = [FEUITheme primaryColorLight];
     self.scrollView.delegate = self;
     self.scrollView.minimumZoomScale=1.0;
     self.scrollView.maximumZoomScale=6.0;
@@ -102,7 +105,8 @@
     [self.dataProvider loadInfoForPhoto:self.currentPhoto
                                 success:^(FEPhotoInfoResult *infoResult) {
                                     [self.loadingIndicator stopAnimating];
-                                    [self.descriptionLabel setAttributedText:[self descriptionTextForPhoto: infoResult.photo]];
+                                    self.title = self.currentPhoto.title.content;
+                                    [self.descriptionLabel setText:[infoResult.photo summaryInfo]];
                                 }
                                    fail:^(NSError *error) {
                                        [self.loadingIndicator stopAnimating];
@@ -121,10 +125,6 @@
 }
 
 #pragma mark - helper methods
--(NSAttributedString*) descriptionTextForPhoto:(FEPhoto*) photo{
-    NSMutableAttributedString *description = [[NSMutableAttributedString alloc] initWithString:[NSString stringWithFormat:@"%@ %@",photo.title,photo.photoDescription.content]];
-    return description;
-}
 
 - (CGRect)zoomRectForScrollView:(UIScrollView *)scrollView withScale:(float)scale withCenter:(CGPoint)center {
     

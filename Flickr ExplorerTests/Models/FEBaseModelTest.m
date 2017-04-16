@@ -1,18 +1,18 @@
 //
-//  Flickr_ExplorerTests.m
-//  Flickr ExplorerTests
+//  FEBaseModelTest.m
+//  Flickr Explorer
 //
-//  Created by Tinh Thach Hinh on 12/4/17.
+//  Created by Tinh Thach Hinh on 16/4/17.
 //  Copyright © 2017 Hinh Tinh Thach. All rights reserved.
 //
 
 #import <XCTest/XCTest.h>
 
-@interface Flickr_ExplorerTests : XCTestCase
+@interface FEBaseModelTest : XCTestCase
 
 @end
 
-@implementation Flickr_ExplorerTests
+@implementation FEBaseModelTest
 
 - (void)setUp {
     [super setUp];

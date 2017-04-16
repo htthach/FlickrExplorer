@@ -22,6 +22,7 @@
     [keyMap setObject:@"isFriend" forKey:@"isfriend"];
     [keyMap setObject:@"isFamily" forKey:@"isfamily"];
     [keyMap setObject:@"photoDescription" forKey:@"description"];
+    [keyMap setObject:@"dateUploaded" forKey:@"dateuploaded"];
     return keyMap;
 }
 
@@ -71,5 +72,19 @@
     else {
         return [NSArray new];
     }
+}
+
+
+/**
+ Return a summary of this photo
+ 
+ @return summary of this photo
+ */
+-(NSString*) summaryInfo{
+    return [NSString stringWithFormat:NSLocalizedString(@"Owner: %@\nDate Uploaded: %@\nTitle: %@\nDescription: %@", @"Photo summmary"),
+            self.owner.username?:@"-",
+            [FEHelper formattedDateStringFromTimestamp:self.dateUploaded],
+            self.title.content?:@"-",
+            self.photoDescription?:@"-"];
 }
 @end

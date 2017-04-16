@@ -34,8 +34,6 @@ static NSString * const FE_PARSING_ERROR_DOMAIN                 = @"com.flickrex
         }
         
         //step 2 json to object
-        NSLog(@"Parsing class %@ from data %@", targetClass, responseJson);
-        
         id responseObject = [self parsedObjectFromJsonObject:responseJson basedOnType:targetClass error:&parseError];
         
         if (complete) {

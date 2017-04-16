@@ -20,6 +20,7 @@
     [[UINavigationBar appearance] setTranslucent:NO];
     [[UINavigationBar appearance] setTintColor: [FEUITheme primaryColorDark]];
     [[UINavigationBar appearance] setBarTintColor:[FEUITheme primaryColorLight]];
+    [[UINavigationBar appearance] setTitleTextAttributes:@{NSForegroundColorAttributeName:[FEUITheme primaryColorDark]}];
 }
 
 -(UIViewController*) demoHome{
