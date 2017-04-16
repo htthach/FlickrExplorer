@@ -11,14 +11,28 @@
 #import "FEPhoto.h"
 #import "FESearchResult.h"
 #import "FEPhotoList.h"
+#import "FELocationProvider.h"
 
-@interface FESearchLogic ()
-@property (nonatomic, strong) NSString          *searchText;
-@property (nonatomic, strong) FESearchResult    *searchResult;
-@property (nonatomic, strong) FESearchResult    *filteredResult;
-@property (nonatomic)         NSInteger         currentPage;
-@property (nonatomic)         BOOL              loadingMore;
-@property (nonatomic, strong) NSArray<NSString*> *currentFilter;
+typedef NS_ENUM(NSInteger, FESearchMode) {
+    FESearchModeIdle     = 0,
+    FESearchModeLocation = 1,
+    FESearchModeText     = 2,
+    FESearchModeTags     = 3,
+};
+
+@interface FESearchLogic () <FELocationProviderDelegate>
+@property (nonatomic)         FESearchMode          searchMode;
+@property (nonatomic, strong) CLLocation            *searchLocation;
+@property (nonatomic, strong) NSString              *searchText;
+@property (nonatomic, strong) NSArray<NSString*>    *searchTags;
+
+@property (nonatomic, strong) FESearchResult        *searchResult;
+@property (nonatomic, strong) FESearchResult        *filteredResult;
+@property (nonatomic)         NSInteger             currentPage;
+@property (nonatomic)         BOOL                  loadingMore;
+@property (nonatomic, strong) NSArray<NSString*>    *currentFilter;
+@property (nonatomic, strong) FELocationProvider    *locationProvider;
+
 @end
 
 @implementation FESearchLogic
@@ -38,6 +52,21 @@
     }
     return self;
 }
+
+
+/**
+ Search for photo nearby with current location
+ */
+-(void) searchNearbyPhoto{
+    if (!self.locationProvider) {
+        self.locationProvider = [FELocationProvider locationProviderWithDelegate:self];
+    }
+    self.searchMode = FESearchModeLocation;
+    [self.locationProvider requestCurrentLocation];
+}
+
+#pragma mark - search methods
+
 /**
  Start searching for photo given the input text from user
  
@@ -45,20 +74,21 @@
  */
 -(void) searchPhotoWithText:(NSString*) text{
     self.currentFilter = nil;
+    self.searchMode = FESearchModeText;
     self.searchText = text;
     self.currentPage = [FESearchResult startingPageIndex];
     [self.dataProvider searchPhotoWithText:text
+                                      tags:nil
                                       page:self.currentPage
                                    success:^(FESearchResult *searchResult) {
-        if ([self.searchText isEqualToString:text]) {
-            //only update if still searching for the same text
-            self.searchResult = searchResult;
-            self.filteredResult = searchResult; //initially, no filtering
-            [self.delegate searchLogicDidRefreshResult];
-        }
-    } fail:^(NSError *error) {
-        [self.delegate searchLogicEncounteredError:error];
-    }];
+                                       if ((self.searchMode == FESearchModeText) &&[self.searchText isEqualToString:text]) {
+                                           //only update if still searching for the same text
+                                           [self handleNewSearchResult:searchResult];
+                                       }
+                                   }
+                                      fail:^(NSError *error) {
+                                          [self.delegate searchLogicEncounteredError:error];
+                                      }];
 }
 
 
@@ -68,7 +98,70 @@
  @param tags tags to search photo by
  */
 -(void) searchPhotoWithTags:(NSArray<NSString*>*) tags{
-    [self searchPhotoWithText:[tags firstObject]];
+    self.currentFilter = nil;
+    self.searchMode = FESearchModeTags;
+    self.searchTags = tags;
+    self.currentPage = [FESearchResult startingPageIndex];
+    [self.dataProvider searchPhotoWithText:nil
+                                      tags:tags
+                                      page:self.currentPage
+                                   success:^(FESearchResult *searchResult) {
+                                       if ((self.searchMode == FESearchModeTags) && [self.searchTags isEqualToArray:tags]) {
+                                           //only update if still searching for the same tags
+                                           [self handleNewSearchResult:searchResult];
+                                       }
+                                   } fail:^(NSError *error) {
+                                       [self.delegate searchLogicEncounteredError:error];
+                                   }];
+}
+
+-(void) searchPhotoWithLocation:(CLLocation*) location{
+    self.currentFilter = nil;
+    self.searchMode = FESearchModeLocation;
+    self.searchLocation = location;
+    self.currentPage = [FESearchResult startingPageIndex];
+    [self.dataProvider searchPhotoWithLatitude:location.coordinate.latitude
+                                     longitude:location.coordinate.longitude
+                                          page:self.currentPage
+                                       success:^(FESearchResult *searchResult) {
+                                           if (self.searchMode == FESearchModeLocation) {
+                                               [self handleNewSearchResult:searchResult];
+                                           }
+                                       }
+                                          fail:^(NSError *error) {
+                                              [self.delegate searchLogicEncounteredError:error];
+                                          }];
+}
+
+
+
+/**
+ New search result come back, reset result with this
+
+ @param searchResult the new search result
+ */
+-(void) handleNewSearchResult:(FESearchResult *)searchResult{
+    self.searchResult = searchResult;
+    //this is a new search result, no filter
+    self.filteredResult = searchResult;
+    [self.delegate searchLogicDidRefreshResult];
+}
+
+#pragma mark - search for more
+/**
+ More search result come back, add to current search result
+
+ @param moreResult the result to append to current result
+ */
+-(void) handleExtraSearchResult:(FESearchResult *) moreResult{
+    
+    [self.searchResult.photos appendPhotoList:moreResult.photos];
+    
+    //filter new result with the same filter
+    FESearchResult *filteredMoreResult = [moreResult resultFilteredWithTags:self.currentFilter];
+    [self.filteredResult.photos appendPhotoList:filteredMoreResult.photos];
+    
+    [self.delegate searchLogicDidFetchMoreResult];
 }
 
 /**
@@ -79,25 +172,77 @@
         return;//already loading more
     }
     
+    //only load more if have more
     if ([self.searchResult hasMorePageAfter:self.currentPage]) {
         self.currentPage ++;
-        NSString *text = self.searchText;
         self.loadingMore = YES;
-        [self.dataProvider searchPhotoWithText:text
+        
+        switch (self.searchMode) {
+            case FESearchModeLocation:
+                [self searchMoreWithCurrentLocation];
+                break;
+            case FESearchModeText:
+                [self searchMoreWithCurrentSearchText];
+                break;
+            case FESearchModeTags:
+                [self searchMoreWithCurrentSearchTags];
+                break;
+            case FESearchModeIdle:
+                //not searching for anything
+                break;
+        }
+    }
+}
+
+-(void) searchMoreWithCurrentLocation{
+    [self.dataProvider searchPhotoWithLatitude:self.searchLocation.coordinate.latitude
+                                     longitude:self.searchLocation.coordinate.longitude
                                           page:self.currentPage
                                        success:^(FESearchResult *searchResult) {
                                            self.loadingMore = NO;
-                                           if ([self.searchText isEqualToString:text]) {
-                                               //only update if still searching for the same text
-                                               [self.searchResult.photos appendPhotoList:searchResult.photos];
-                                               [self.delegate searchLogicDidFetchMoreResult];
+                                           if (self.searchMode == FESearchModeLocation) {
+                                               //only update if still searching by location
+                                               [self handleExtraSearchResult:searchResult];
                                            }
-                                       } fail:^(NSError *error) {
-                                           self.loadingMore = NO;
-                                           [self.delegate searchLogicEncounteredError:error];
-                                       }];
+                                       }
+                                          fail:^(NSError *error) {
+                                              self.loadingMore = NO;
+                                              [self.delegate searchLogicEncounteredError:error];
+                                          }];
+}
 
-    }
+-(void) searchMoreWithCurrentSearchText{
+    NSString *text = self.searchText;
+    [self.dataProvider searchPhotoWithText:text
+                                      tags:nil
+                                      page:self.currentPage
+                                   success:^(FESearchResult *searchResult) {
+                                       self.loadingMore = NO;
+                                       if ((self.searchMode == FESearchModeText) && [self.searchText isEqualToString:text]) {
+                                           //only update if still searching for the same text
+                                           [self handleExtraSearchResult:searchResult];
+                                       }
+                                   } fail:^(NSError *error) {
+                                       self.loadingMore = NO;
+                                       [self.delegate searchLogicEncounteredError:error];
+                                   }];
+}
+
+-(void) searchMoreWithCurrentSearchTags{
+    NSArray<NSString*> *tags = self.searchTags;
+    [self.dataProvider searchPhotoWithText:nil
+                                      tags:tags
+                                      page:self.currentPage
+                                   success:^(FESearchResult *searchResult) {
+                                       self.loadingMore = NO;
+                                       if ((self.searchMode == FESearchModeTags) && [self.searchTags isEqualToArray:tags]) {
+                                           //only update if still searching for the same tags
+                                           [self handleExtraSearchResult:searchResult];
+                                       }
+                                   } fail:^(NSError *error) {
+                                       self.loadingMore = NO;
+                                       [self.delegate searchLogicEncounteredError:error];
+                                   }];
 }
 
 /**
@@ -143,4 +288,16 @@
     return [self.searchResult.photos mostPopularTag:count];
 }
 
+#pragma mark - FELocationProviderDelegate
+-(void)locationProviderDidGetCurrentLocation:(CLLocation *)currentLocation{
+    //update search location
+    self.searchLocation = currentLocation;
+    if (self.searchMode == FESearchModeLocation) {
+        //if still in search mode location aka user have not inititated a different search yet
+        [self searchPhotoWithLocation:currentLocation];
+    }
+}
+-(void)locationProviderDidFailGettingLocation:(NSError *)error{
+    [self.delegate searchLogicEncounteredError:error];
+}
 @end

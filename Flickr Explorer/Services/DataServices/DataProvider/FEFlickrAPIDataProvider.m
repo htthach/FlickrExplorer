@@ -29,10 +29,12 @@ static NSString * const FE_ENDPOINT_PARAM_PER_PAGE          = @"per_page";
 static NSString * const FE_ENDPOINT_PARAM_EXTRA             = @"extras";
 static NSString * const FE_ENDPOINT_PARAM_PHOTO_ID          = @"photo_id";
 static NSString * const FE_ENDPOINT_PARAM_SECRET            = @"secret";
-
+static NSString * const FE_ENDPOINT_PARAM_TAGS              = @"tags";
+static NSString * const FE_ENDPOINT_PARAM_LATITUDE          = @"lat";
+static NSString * const FE_ENDPOINT_PARAM_LONGITUDE         = @"lon";
 //param value
 
-static NSString * const FE_ENDPOINT_VALUE_TAG               = @"tags";
+static NSString * const FE_ENDPOINT_VALUE_TAGS              = @"tags";
 static NSString * const FE_ENDPOINT_VALUE_PER_PAGE          = @"80"; //fetch 80 result per page
 
 
@@ -262,7 +264,11 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
     NSURLComponents *components = [NSURLComponents componentsWithString:@"rest"];
     NSMutableArray *queryItems = [NSMutableArray array];
     for (NSString *key in param) {
-        [queryItems addObject:[NSURLQueryItem queryItemWithName:key value:param[key]]];
+        NSString *value = param[key];
+        if (![FEHelper isEmptyString:key] && ![FEHelper isEmptyString:value]) {
+            //only add query item if valid string
+            [queryItems addObject:[NSURLQueryItem queryItemWithName:key value:param[key]]];
+        }
     }
     //add default params
     [queryItems addObject:[NSURLQueryItem queryItemWithName:FE_ENDPOINT_PARAM_API_KEY value:[FEConfigurations flickrAPIKey]]];
@@ -305,42 +311,73 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
 }
 
 /**
- Construct an error object to describe the "invalid request param" error
+ Construct an error object to describe the "invalid request param" error with a reason
 
  @return an error object to describe the "invalid request param" error
  */
-+(NSError*) invalidRequestParamError{
-    NSError *error = [[NSError alloc] initWithDomain:FE_NETWORK_ERROR_DOMAIN code:FE_NETWORK_ERROR_CODE_INVALID_PARAM userInfo:[NSDictionary dictionaryWithObject:NSLocalizedString(@"Invalid Request Parameter", @"Parameter error message") forKey:NSLocalizedDescriptionKey]];
++(NSError*) invalidRequestParamError:(NSString*) reason{
+    NSError *error = [[NSError alloc] initWithDomain:FE_NETWORK_ERROR_DOMAIN code:FE_NETWORK_ERROR_CODE_INVALID_PARAM userInfo:[NSDictionary dictionaryWithObject:reason forKey:NSLocalizedDescriptionKey]];
     return error;
 }
 #pragma mark - Implementation of FEDataProvider
 
 /**
- Search Flickr API for photos matching some free text
+ Search Flickr API for photos matching some free text or tags. At least text or tags must present. Text takes precedent
  
  @param text    the free text to search for
+ @param tags    the tags to search for. We'll use tags if text is nil or empty
  @param page    the result page to fetch
  @param success success callback block
  @param fail    failure callback block
  */
 -(void) searchPhotoWithText:(NSString*) text
+                       tags:(NSArray<NSString*>*)tags
                        page:(NSUInteger) page
                     success:(void (^)(FESearchResult *searchResult)) success
                        fail:(void (^)(NSError *error)) fail{
     
     //check if valid parameters
-    if ([FEHelper isEmptyString:text]) {
+    if ([FEHelper isEmptyString:text] && [tags count] == 0) {
         if (fail) {
-            fail ([FEFlickrAPIDataProvider invalidRequestParamError]);
+            fail ([FEFlickrAPIDataProvider invalidRequestParamError:NSLocalizedString(@"Either text or tags must be given", @"Invalid search param message")]);
         }
         return;
     }
     
+    NSString *tagsStr = [tags componentsJoinedByString:@","];
     [self GET:[self endPointForParams:@{FE_ENDPOINT_PARAM_METHOD:FE_API_SEARCH_METHOD,
-                                        FE_ENDPOINT_PARAM_TEXT:text,
+                                        FE_ENDPOINT_PARAM_TEXT:text?:@"",
+                                        FE_ENDPOINT_PARAM_TAGS:tagsStr?:@"",
                                         FE_ENDPOINT_PARAM_PER_PAGE:FE_ENDPOINT_VALUE_PER_PAGE,
-                                        FE_ENDPOINT_PARAM_PAGE:[NSString stringWithFormat:@"%@", @(page)],
-                                        FE_ENDPOINT_PARAM_EXTRA:FE_ENDPOINT_VALUE_TAG
+                                        FE_ENDPOINT_PARAM_PAGE:@(page).stringValue,
+                                        FE_ENDPOINT_PARAM_EXTRA:FE_ENDPOINT_VALUE_TAGS
+                                        }
+               ]
+   returnType:[FESearchResult class]
+      success:success
+         fail:fail];
+}
+
+/**
+ Search Flickr API for photos nearby a location
+ 
+ @param latitude    the latitude to search for
+ @param longitude    the longitude to search for
+ @param page    the result page to fetch
+ @param success success callback block
+ @param fail    failure callback block
+ */
+-(void) searchPhotoWithLatitude:(double) latitude
+                      longitude:(double) longitude
+                           page:(NSUInteger) page
+                        success:(void (^)(FESearchResult *searchResult)) success
+                           fail:(void (^)(NSError *error)) fail{
+    [self GET:[self endPointForParams:@{FE_ENDPOINT_PARAM_METHOD:FE_API_SEARCH_METHOD,
+                                        FE_ENDPOINT_PARAM_LATITUDE:@(latitude).stringValue,
+                                        FE_ENDPOINT_PARAM_LONGITUDE:@(longitude).stringValue,
+                                        FE_ENDPOINT_PARAM_PER_PAGE:FE_ENDPOINT_VALUE_PER_PAGE,
+                                        FE_ENDPOINT_PARAM_PAGE:@(page).stringValue,
+                                        FE_ENDPOINT_PARAM_EXTRA:FE_ENDPOINT_VALUE_TAGS
                                         }
                ]
    returnType:[FESearchResult class]
@@ -361,7 +398,7 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
     //check if valid parameters
     if ([FEHelper isEmptyString:photo.photoId]) {
         if (fail) {
-            fail ([FEFlickrAPIDataProvider invalidRequestParamError]);
+            fail ([FEFlickrAPIDataProvider invalidRequestParamError:NSLocalizedString(@"Missing photo id", @"Invalid photo info param message")]);
         }
         return;
     }

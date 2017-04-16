@@ -36,6 +36,12 @@
  */
 -(instancetype) initWithDataProvider:(id<FEDataProvider>) dataProvider delegate:(id<FESearchLogicDelegate>) delegate;
 
+
+/**
+ Search for photo nearby with current location
+ */
+-(void) searchNearbyPhoto;
+
 /**
  Start searching for photo given the input text from user
  

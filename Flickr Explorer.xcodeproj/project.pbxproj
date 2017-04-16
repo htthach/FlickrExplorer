@@ -28,7 +28,7 @@
 		6F2D5EAD1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5EAB1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib */; };
 		6F2D5EB71EA08FAE0038FFF5 /* FEXmlParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EB21EA08FAE0038FFF5 /* FEXmlParser.m */; };
 		6F2D5EB81EA08FAE0038FFF5 /* FEFlickrAPIDataProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EB51EA08FAE0038FFF5 /* FEFlickrAPIDataProvider.m */; };
-		6F2D5EBB1EA08FC60038FFF5 /* FELocationManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EBA1EA08FC60038FFF5 /* FELocationManager.m */; };
+		6F2D5EBB1EA08FC60038FFF5 /* FELocationProvider.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EBA1EA08FC60038FFF5 /* FELocationProvider.m */; };
 		6F2D5EBE1EA090FB0038FFF5 /* FEJsonParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5EBD1EA090FB0038FFF5 /* FEJsonParser.m */; };
 		6F8948071EA095530096B5A0 /* FEPhoto.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8948061EA095530096B5A0 /* FEPhoto.m */; };
 		6F89480A1EA095610096B5A0 /* FEPhotoList.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F8948091EA095610096B5A0 /* FEPhotoList.m */; };
@@ -96,8 +96,8 @@
 		6F2D5EB21EA08FAE0038FFF5 /* FEXmlParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEXmlParser.m; sourceTree = "<group>"; };
 		6F2D5EB41EA08FAE0038FFF5 /* FEFlickrAPIDataProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEFlickrAPIDataProvider.h; sourceTree = "<group>"; };
 		6F2D5EB51EA08FAE0038FFF5 /* FEFlickrAPIDataProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEFlickrAPIDataProvider.m; sourceTree = "<group>"; };
-		6F2D5EB91EA08FC60038FFF5 /* FELocationManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FELocationManager.h; sourceTree = "<group>"; };
-		6F2D5EBA1EA08FC60038FFF5 /* FELocationManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FELocationManager.m; sourceTree = "<group>"; };
+		6F2D5EB91EA08FC60038FFF5 /* FELocationProvider.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FELocationProvider.h; sourceTree = "<group>"; };
+		6F2D5EBA1EA08FC60038FFF5 /* FELocationProvider.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FELocationProvider.m; sourceTree = "<group>"; };
 		6F2D5EBC1EA090FB0038FFF5 /* FEJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEJsonParser.h; sourceTree = "<group>"; };
 		6F2D5EBD1EA090FB0038FFF5 /* FEJsonParser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEJsonParser.m; sourceTree = "<group>"; };
 		6F2D5EBF1EA091210038FFF5 /* FEDataToObjectParser.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = FEDataToObjectParser.h; sourceTree = "<group>"; };
@@ -331,8 +331,8 @@
 		6F2D5EB61EA08FAE0038FFF5 /* LocationServices */ = {
 			isa = PBXGroup;
 			children = (
-				6F2D5EB91EA08FC60038FFF5 /* FELocationManager.h */,
-				6F2D5EBA1EA08FC60038FFF5 /* FELocationManager.m */,
+				6F2D5EB91EA08FC60038FFF5 /* FELocationProvider.h */,
+				6F2D5EBA1EA08FC60038FFF5 /* FELocationProvider.m */,
 			);
 			path = LocationServices;
 			sourceTree = "<group>";
@@ -504,7 +504,7 @@
 				6F89481A1EA0E6700096B5A0 /* FESearchResult.m in Sources */,
 				6F1B40D11EA33ADF0029C586 /* FEUITheme.m in Sources */,
 				6F2D5EB71EA08FAE0038FFF5 /* FEXmlParser.m in Sources */,
-				6F2D5EBB1EA08FC60038FFF5 /* FELocationManager.m in Sources */,
+				6F2D5EBB1EA08FC60038FFF5 /* FELocationProvider.m in Sources */,
 				6F2D5E581E9E7B0C0038FFF5 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

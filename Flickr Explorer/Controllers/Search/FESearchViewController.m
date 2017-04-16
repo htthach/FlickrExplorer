@@ -77,6 +77,9 @@ static CGFloat const FE_GRID_MARGIN   = 5;
     [self setupCollectionView];
     [self setupSearchBar];
     [self setupOtherViews];
+    
+    //initially, we search for nearby photo
+    [self performSearchNearby];
 }
 
 -(void)viewWillAppear:(BOOL)animated{
@@ -135,7 +138,6 @@ static CGFloat const FE_GRID_MARGIN   = 5;
     self.searchBar.barTintColor = self.navigationController.navigationBar.barTintColor;
     self.searchBar.delegate = self;
     self.searchBar.translucent = NO;
-    [self.searchBar becomeFirstResponder];
 }
 
 -(void) setupOtherViews{
@@ -149,11 +151,19 @@ static CGFloat const FE_GRID_MARGIN   = 5;
 }
 
 #pragma mark - functional methods
+-(void) performSearchNearby{
+    [self.loadingIndicator startAnimating];
+    [self.searchLogic searchNearbyPhoto];
+}
 -(void) performSearchWithText:(NSString*) text{
     [self.loadingIndicator startAnimating];
     [self.searchLogic searchPhotoWithText:text];
 }
-
+-(void) performSearchWithTags:(NSArray<NSString*>*)tags{
+    self.searchBar.text = @"";//to avoid confusion, we clear search bar text
+    [self.loadingIndicator startAnimating];
+    [self.searchLogic searchPhotoWithTags:tags];
+}
 -(void) showDetailForPhoto:(FEPhoto*) photo{
     [self.navigationController pushViewController:[FEPhotoDetailViewController viewControllerWithPhoto:photo
                                                                                           dataProvider:self.searchLogic.dataProvider
@@ -270,7 +280,7 @@ static CGFloat const FE_GRID_MARGIN   = 5;
 }
 #pragma mark - FETagSelectionViewDelegate
 
--(void) tagSelectionViewDidSelectTags:(NSArray *)tags{
+-(void) tagSelectionViewDidSelectTags:(NSArray<NSString*>*)tags{
     [self.searchLogic filterResultByTags:tags];
     [self resetContent];
 }
@@ -280,9 +290,8 @@ static CGFloat const FE_GRID_MARGIN   = 5;
     [self resetContent];
 }
 
--(void) tagSelectionViewDidChooseSearchWithTags:(NSArray *)tags{
-    self.searchBar.text = @"";
-    [self.searchLogic searchPhotoWithTags:tags];
+-(void) tagSelectionViewDidChooseSearchWithTags:(NSArray<NSString*>*)tags{
+    [self performSearchWithTags:tags];
 }
 
 -(void) tagSelectionViewNeedUpdateHeight:(CGFloat) height{
