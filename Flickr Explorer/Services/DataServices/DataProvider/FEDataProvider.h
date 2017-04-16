@@ -15,10 +15,12 @@
  Search Flickr API for photos matching some free text
  
  @param text    the free text to search for
+ @param page    the result page to fetch
  @param success success callback block
  @param fail    failure callback block
  */
 -(void) searchPhotoWithText:(NSString*) text
+                       page:(NSUInteger) page
                     success:(void (^)(FESearchResult *searchResult)) success
                        fail:(void (^)(NSError *error)) fail;
 

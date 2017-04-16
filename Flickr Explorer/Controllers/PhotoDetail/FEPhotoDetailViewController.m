@@ -12,10 +12,13 @@
 #import "FEDataProvider.h"
 #import "FEHelper.h"
 #import "FEPhotoInfoResult.h"
+#import "FELoadingIndicatorView.h"
 @interface FEPhotoDetailViewController () <UIScrollViewDelegate>
 @property (weak, nonatomic) IBOutlet UIScrollView   *scrollView;
 @property (weak, nonatomic) IBOutlet UIImageView    *imageView;
+@property (weak, nonatomic) IBOutlet UIView         *infoContainer;
 @property (weak, nonatomic) IBOutlet UILabel        *descriptionLabel;
+@property (nonatomic, strong) FELoadingIndicatorView *loadingIndicator;
 
 @property (nonatomic, strong) FEPhoto               *currentPhoto;
 @property (nonatomic, strong) id<FEImageProvider>   imageProvider;
@@ -45,6 +48,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self setupScrollView];
+    self.loadingIndicator = [[FELoadingIndicatorView alloc] initFullyInside:self.infoContainer];
     [self loadPhotoInfo];
     [self loadImageForSize: FEPhotoSizeLarge];
 }
@@ -91,11 +95,14 @@
 #pragma mark - functional methods
 
 -(void) loadPhotoInfo{
+    [self.loadingIndicator startAnimating];
     [self.dataProvider loadInfoForPhoto:self.currentPhoto
                                 success:^(FEPhotoInfoResult *infoResult) {
+                                    [self.loadingIndicator stopAnimating];
                                     [self.descriptionLabel setAttributedText:[self descriptionTextForPhoto: infoResult.photo]];
                                 }
                                    fail:^(NSError *error) {
+                                       [self.loadingIndicator stopAnimating];
                                        [FEHelper showError:error inViewController:self];
                                    }];
 }

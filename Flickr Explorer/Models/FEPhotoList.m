@@ -55,4 +55,31 @@
     }
     return nil;
 }
+
+/**
+ Append other photo list into this list. And update with the new list page info
+ 
+ @param otherPhotos the other photo list to append
+ */
+-(void) appendPhotoList:(FEPhotoList*) otherPhotos{
+    if ([otherPhotos.photo count] <= 0) {
+        return;//nothing to do
+    }
+    
+    //update page info
+    self.page = otherPhotos.page;
+    self.pages = otherPhotos.pages;
+    
+    //if this list is empty, just use the other list
+    if (!self.photo) {
+        self.photo = otherPhotos.photo;
+        return;
+    }
+    
+    //combine
+    NSMutableArray *combined = [NSMutableArray arrayWithArray:self.photo];
+    [combined addObjectsFromArray: otherPhotos.photo];
+    
+    self.photo = [NSArray arrayWithArray:combined];
+}
 @end

@@ -24,6 +24,8 @@ static NSString * const FE_ENDPOINT_PARAM_FORMAT            = @"format";
 static NSString * const FE_ENDPOINT_PARAM_NO_CALLBACK       = @"nojsoncallback";
 static NSString * const FE_ENDPOINT_PARAM_METHOD            = @"method";
 static NSString * const FE_ENDPOINT_PARAM_TEXT              = @"text";
+static NSString * const FE_ENDPOINT_PARAM_PAGE              = @"page";
+static NSString * const FE_ENDPOINT_PARAM_PER_PAGE          = @"per_page";
 static NSString * const FE_ENDPOINT_PARAM_EXTRA             = @"extras";
 static NSString * const FE_ENDPOINT_PARAM_PHOTO_ID          = @"photo_id";
 static NSString * const FE_ENDPOINT_PARAM_SECRET            = @"secret";
@@ -31,6 +33,7 @@ static NSString * const FE_ENDPOINT_PARAM_SECRET            = @"secret";
 //param value
 
 static NSString * const FE_ENDPOINT_VALUE_TAG               = @"tags";
+static NSString * const FE_ENDPOINT_VALUE_PER_PAGE          = @"50"; //fetch 50 result per page
 
 
 //flick URL template
@@ -166,7 +169,9 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
                                              //if cannot parse, abort
                                              if (parseError) {
                                                  if (fail) {
-                                                     fail(parseError);
+                                                     dispatch_async(dispatch_get_main_queue(), ^{
+                                                         fail(parseError);
+                                                     });
                                                  }
                                                  return;
                                              }
@@ -174,7 +179,9 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
                                              //can parse successfully
                                              [self.apiResponseCache cacheObject:resultObject ofSize:dataSize forKey:endpoint];
                                              if (success) {
-                                                 success(resultObject);
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     success(resultObject);
+                                                 });
                                              }
                                          }];
                                      }];
@@ -315,10 +322,12 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
  Search Flickr API for photos matching some free text
  
  @param text    the free text to search for
+ @param page    the result page to fetch
  @param success success callback block
  @param fail    failure callback block
  */
 -(void) searchPhotoWithText:(NSString*) text
+                       page:(NSUInteger) page
                     success:(void (^)(FESearchResult *searchResult)) success
                        fail:(void (^)(NSError *error)) fail{
     
@@ -332,6 +341,8 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
     
     [self GET:[self endPointForParams:@{FE_ENDPOINT_PARAM_METHOD:FE_API_SEARCH_METHOD,
                                         FE_ENDPOINT_PARAM_TEXT:text,
+                                        FE_ENDPOINT_PARAM_PER_PAGE:FE_ENDPOINT_VALUE_PER_PAGE,
+                                        FE_ENDPOINT_PARAM_PAGE:[NSString stringWithFormat:@"%@", @(page)],
                                         FE_ENDPOINT_PARAM_EXTRA:FE_ENDPOINT_VALUE_TAG
                                         }
                ]

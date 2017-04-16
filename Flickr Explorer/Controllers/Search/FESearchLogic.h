@@ -12,14 +12,15 @@
 
 @protocol FESearchLogicDelegate <NSObject>
 
--(void) searchLogicDidUpdateResult;
+-(void) searchLogicDidRefreshResult;
+-(void) searchLogicDidFetchMoreResult;
 -(void) searchLogicEncounteredError:(NSError*) error;
 
 @end
 
 
 /**
- This class will handle most of searching logic
+ This class will handle most of searching logic. We try to keep the view controller dumb.
  */
 @interface FESearchLogic : NSObject
 @property (nonatomic, strong) id<FEDataProvider> dataProvider;
@@ -39,8 +40,19 @@
  
  @param text the input text to search photo
  */
--(void) searchPhotoPhotoWithText:(NSString*) text;
+-(void) searchPhotoWithText:(NSString*) text;
 
+/**
+ Start searching for photo given the selected tag
+ 
+ @param tag tag to search photo by
+ */
+-(void) searchPhotoWithTag:(NSString*) tag;
+
+/**
+ Fetch more search result from current search criteria
+ */
+-(void) fetchMoreSearchResult;
 
 /**
  Number of photo to show from search result
@@ -57,4 +69,20 @@
  */
 -(FEPhoto*) photoToDisplayAtIndex:(NSInteger) index;
 
+
+/**
+ From now on, all search result will be filtered by this tag.
+
+ @param tag tag to filter result by. If pass nil, clear all tag filter.
+ */
+-(void) filterResultByTag:(NSString*) tag;
+
+
+/**
+ Return the most popular tag from the search result.
+ 
+ @param count number of top result to return. E.g passing 10 will return top 10
+ @return the most popular tag from the search result.
+ */
+-(NSArray*) searchResultPopularTags:(NSInteger) count;
 @end

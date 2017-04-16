@@ -11,6 +11,9 @@
 		6F1B40C21EA250C40029C586 /* FEPhotoDetailViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 6F1B40C01EA250C40029C586 /* FEPhotoDetailViewController.xib */; };
 		6F1B40C51EA26E770029C586 /* FEPhotoInfoResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40C41EA26E770029C586 /* FEPhotoInfoResult.m */; };
 		6F1B40C81EA276C30029C586 /* FEContent.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40C71EA276C30029C586 /* FEContent.m */; };
+		6F1B40CB1EA32C9D0029C586 /* FETagSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40CA1EA32C9D0029C586 /* FETagSelectionView.m */; };
+		6F1B40CE1EA32CF60029C586 /* FELoadingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40CD1EA32CF60029C586 /* FELoadingIndicatorView.m */; };
+		6F1B40D11EA33ADF0029C586 /* FEUITheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40D01EA33ADF0029C586 /* FEUITheme.m */; };
 		6F2D5E581E9E7B0C0038FFF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E571E9E7B0C0038FFF5 /* main.m */; };
 		6F2D5E5B1E9E7B0C0038FFF5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E5A1E9E7B0C0038FFF5 /* AppDelegate.m */; };
 		6F2D5E631E9E7B0C0038FFF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5E621E9E7B0C0038FFF5 /* Assets.xcassets */; };
@@ -61,6 +64,12 @@
 		6F1B40C41EA26E770029C586 /* FEPhotoInfoResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEPhotoInfoResult.m; sourceTree = "<group>"; };
 		6F1B40C61EA276C30029C586 /* FEContent.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEContent.h; sourceTree = "<group>"; };
 		6F1B40C71EA276C30029C586 /* FEContent.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEContent.m; sourceTree = "<group>"; };
+		6F1B40C91EA32C9D0029C586 /* FETagSelectionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FETagSelectionView.h; sourceTree = "<group>"; };
+		6F1B40CA1EA32C9D0029C586 /* FETagSelectionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FETagSelectionView.m; sourceTree = "<group>"; };
+		6F1B40CC1EA32CF60029C586 /* FELoadingIndicatorView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FELoadingIndicatorView.h; sourceTree = "<group>"; };
+		6F1B40CD1EA32CF60029C586 /* FELoadingIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FELoadingIndicatorView.m; sourceTree = "<group>"; };
+		6F1B40CF1EA33ADF0029C586 /* FEUITheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEUITheme.h; sourceTree = "<group>"; };
+		6F1B40D01EA33ADF0029C586 /* FEUITheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEUITheme.m; sourceTree = "<group>"; };
 		6F2D5E531E9E7B0C0038FFF5 /* Flickr Explorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flickr Explorer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F2D5E571E9E7B0C0038FFF5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6F2D5E591E9E7B0C0038FFF5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -267,6 +276,10 @@
 				6F2D5EA91E9E9D730038FFF5 /* FEPhotoCollectionViewCell.h */,
 				6F2D5EAA1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.m */,
 				6F2D5EAB1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.xib */,
+				6F1B40C91EA32C9D0029C586 /* FETagSelectionView.h */,
+				6F1B40CA1EA32C9D0029C586 /* FETagSelectionView.m */,
+				6F1B40CC1EA32CF60029C586 /* FELoadingIndicatorView.h */,
+				6F1B40CD1EA32CF60029C586 /* FELoadingIndicatorView.m */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -329,6 +342,8 @@
 			children = (
 				6F8948121EA0C3D70096B5A0 /* FEHelper.h */,
 				6F8948131EA0C3D70096B5A0 /* FEHelper.m */,
+				6F1B40CF1EA33ADF0029C586 /* FEUITheme.h */,
+				6F1B40D01EA33ADF0029C586 /* FEUITheme.m */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -476,7 +491,9 @@
 				6F1B40C81EA276C30029C586 /* FEContent.m in Sources */,
 				6F1B40C11EA250C40029C586 /* FEPhotoDetailViewController.m in Sources */,
 				6F8948071EA095530096B5A0 /* FEPhoto.m in Sources */,
+				6F1B40CB1EA32C9D0029C586 /* FETagSelectionView.m in Sources */,
 				6F8948141EA0C3D70096B5A0 /* FEHelper.m in Sources */,
+				6F1B40CE1EA32CF60029C586 /* FELoadingIndicatorView.m in Sources */,
 				6F8948171EA0CF200096B5A0 /* FEBaseModel.m in Sources */,
 				6F8948101EA0B2F90096B5A0 /* FEConfigurations.m in Sources */,
 				6F2D5EB81EA08FAE0038FFF5 /* FEFlickrAPIDataProvider.m in Sources */,
@@ -485,6 +502,7 @@
 				6F2D5E991E9E88570038FFF5 /* FESearchLogic.m in Sources */,
 				6F2D5E5B1E9E7B0C0038FFF5 /* AppDelegate.m in Sources */,
 				6F89481A1EA0E6700096B5A0 /* FESearchResult.m in Sources */,
+				6F1B40D11EA33ADF0029C586 /* FEUITheme.m in Sources */,
 				6F2D5EB71EA08FAE0038FFF5 /* FEXmlParser.m in Sources */,
 				6F2D5EBB1EA08FC60038FFF5 /* FELocationManager.m in Sources */,
 				6F2D5E581E9E7B0C0038FFF5 /* main.m in Sources */,

@@ -13,6 +13,7 @@
             <connections>
                 <outlet property="descriptionLabel" destination="d2a-35-Nec" id="7Ox-1l-xac"/>
                 <outlet property="imageView" destination="yxf-Wt-zuY" id="3ZF-1M-qtj"/>
+                <outlet property="infoContainer" destination="c1t-jz-Tyk" id="yB7-nU-tEJ"/>
                 <outlet property="scrollView" destination="k3f-D8-PEg" id="G8A-ZS-Xjn"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
@@ -25,7 +26,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="c1t-jz-Tyk">
                     <rect key="frame" x="0.0" y="567" width="375" height="100"/>
                     <subviews>
-                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d2a-35-Nec">
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" lineBreakMode="wordWrap" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="d2a-35-Nec">
                             <rect key="frame" x="8" y="8" width="359" height="84"/>
                             <fontDescription key="fontDescription" type="system" pointSize="17"/>
                             <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>

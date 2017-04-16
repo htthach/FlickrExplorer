@@ -9,23 +9,30 @@
 #import "AppDelegate.h"
 #import "FESearchViewController.h"
 #import "FEFlickrAPIDataProvider.h"
+#import "FEUITheme.h"
 
 @interface AppDelegate ()
 
 @end
 
 @implementation AppDelegate
+-(void) setUITheme{
+    [[UINavigationBar appearance] setTranslucent:NO];
+    [[UINavigationBar appearance] setTintColor: [FEUITheme primaryColorDark]];
+    [[UINavigationBar appearance] setBarTintColor:[FEUITheme primaryColorLight]];
+}
 
 -(UIViewController*) demoHome{
     //For now the first thing user see is the Search Page under a navigation controller
     FESearchViewController *searchVC = [FESearchViewController viewControllerWithDataProvider:[FEFlickrAPIDataProvider sharedDefaultProvider]
                                                                                 imageProvider:[FEFlickrAPIDataProvider sharedDefaultProvider]];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:searchVC];
-    return navigationController;
+    return [[UINavigationController alloc] initWithRootViewController:searchVC];
 }
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
     // Override point for customization after application launch.
+    [self setUITheme];
+    
     self.window = [UIWindow new];
     
     //set home page for this code demo

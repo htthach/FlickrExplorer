@@ -27,11 +27,9 @@ static NSString * const FE_PARSING_ERROR_DOMAIN                 = @"com.flickrex
         NSError *parseError = nil;
         id responseJson = [NSJSONSerialization JSONObjectWithData:data options:0 error:&parseError];
         if(parseError){
-            dispatch_async(dispatch_get_main_queue(), ^{
-                if (complete) {
-                    complete(nil, parseError);
-                }
-            });
+            if (complete) {
+                complete(nil, parseError);
+            }
             return;
         }
         
@@ -39,11 +37,11 @@ static NSString * const FE_PARSING_ERROR_DOMAIN                 = @"com.flickrex
         NSLog(@"Parsing class %@ from data %@", targetClass, responseJson);
         
         id responseObject = [self parsedObjectFromJsonObject:responseJson basedOnType:targetClass error:&parseError];
-        dispatch_async(dispatch_get_main_queue(), ^{
-            if (complete) {
-                complete(responseObject, parseError);
-            }
-        });
+        
+        if (complete) {
+            complete(responseObject, parseError);
+        }
+        
     });
 }
 

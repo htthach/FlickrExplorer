@@ -14,7 +14,7 @@
 
  @param data        the input data to parse
  @param targetClass the target class of the result
- @param complete    the completion block to be called after parsing complete.
+ @param complete    the completion block to be called after parsing complete. This may not be called on main thread.
  */
 -(void) parseData:(NSData*) data intoObjectOfClass:(Class) targetClass complete:(void (^)(id resultObject, NSError *parseError)) complete;
 

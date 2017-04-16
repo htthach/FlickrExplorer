@@ -30,4 +30,11 @@
  @return a photo at an index from this list
  */
 -(FEPhoto*) photoAtIndex:(NSInteger) index;
+
+/**
+ Append other photo list into this list. And update with the new list page info
+ 
+ @param otherPhotos the other photo list to append
+ */
+-(void) appendPhotoList:(FEPhotoList*) otherPhotos;
 @end
