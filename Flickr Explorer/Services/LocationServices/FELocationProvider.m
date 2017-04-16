@@ -121,6 +121,7 @@ static NSString * const FE_LOCATION_ERROR_DOMAIN    = @"com.flickrexplorer.ios.l
     }
     else if (status == kCLAuthorizationStatusAuthorizedWhenInUse || status == kCLAuthorizationStatusAuthorizedAlways) {
         //user did grant permission
+        [self requestCurrentLocation];
     }
     else {
         //for all thing else, we consider user did deny
