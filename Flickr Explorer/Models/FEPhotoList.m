@@ -142,4 +142,14 @@
     result.perPage = self.perPage;
     return result;
 }
+
+/**
+ Check if this list contain a photo
+ 
+ @param photo photo to check
+ @return YES if there is a same photo in the list
+ */
+-(BOOL) containsPhoto:(FEPhoto*) photo{
+    return [self.photos containsObject:photo];
+}
 @end

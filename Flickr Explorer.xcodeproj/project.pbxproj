@@ -14,6 +14,8 @@
 		6F1B40CB1EA32C9D0029C586 /* FETagSelectionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40CA1EA32C9D0029C586 /* FETagSelectionView.m */; };
 		6F1B40CE1EA32CF60029C586 /* FELoadingIndicatorView.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40CD1EA32CF60029C586 /* FELoadingIndicatorView.m */; };
 		6F1B40D11EA33ADF0029C586 /* FEUITheme.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1B40D01EA33ADF0029C586 /* FEUITheme.m */; };
+		6F1EE68E1EA3C880001A7531 /* FEJsonParserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1EE68D1EA3C880001A7531 /* FEJsonParserTest.m */; };
+		6F1EE6921EA3CF53001A7531 /* FEMockNSURLSession.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F1EE6911EA3CF53001A7531 /* FEMockNSURLSession.m */; };
 		6F2D5E581E9E7B0C0038FFF5 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E571E9E7B0C0038FFF5 /* main.m */; };
 		6F2D5E5B1E9E7B0C0038FFF5 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 6F2D5E5A1E9E7B0C0038FFF5 /* AppDelegate.m */; };
 		6F2D5E631E9E7B0C0038FFF5 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6F2D5E621E9E7B0C0038FFF5 /* Assets.xcassets */; };
@@ -39,7 +41,6 @@
 		6FC6154C1EA3BE1F00A6A517 /* FEPeople.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FC6154B1EA3BE1F00A6A517 /* FEPeople.m */; };
 		6FC615511EA3C52100A6A517 /* FEPhotoListTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FC615501EA3C52100A6A517 /* FEPhotoListTest.m */; };
 		6FC615531EA3C58E00A6A517 /* FESearchLogicTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FC615521EA3C58E00A6A517 /* FESearchLogicTest.m */; };
-		6FC615551EA3C5C300A6A517 /* FEBaseModelTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FC615541EA3C5C300A6A517 /* FEBaseModelTest.m */; };
 		6FC615571EA3C60300A6A517 /* FEFlickrAPIDataProviderTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 6FC615561EA3C60300A6A517 /* FEFlickrAPIDataProviderTest.m */; };
 /* End PBXBuildFile section */
 
@@ -74,6 +75,9 @@
 		6F1B40CD1EA32CF60029C586 /* FELoadingIndicatorView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FELoadingIndicatorView.m; sourceTree = "<group>"; };
 		6F1B40CF1EA33ADF0029C586 /* FEUITheme.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEUITheme.h; sourceTree = "<group>"; };
 		6F1B40D01EA33ADF0029C586 /* FEUITheme.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEUITheme.m; sourceTree = "<group>"; };
+		6F1EE68D1EA3C880001A7531 /* FEJsonParserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEJsonParserTest.m; sourceTree = "<group>"; };
+		6F1EE6901EA3CF53001A7531 /* FEMockNSURLSession.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FEMockNSURLSession.h; sourceTree = "<group>"; };
+		6F1EE6911EA3CF53001A7531 /* FEMockNSURLSession.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEMockNSURLSession.m; sourceTree = "<group>"; };
 		6F2D5E531E9E7B0C0038FFF5 /* Flickr Explorer.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Flickr Explorer.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6F2D5E571E9E7B0C0038FFF5 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		6F2D5E591E9E7B0C0038FFF5 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -125,7 +129,6 @@
 		6FC6154B1EA3BE1F00A6A517 /* FEPeople.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEPeople.m; sourceTree = "<group>"; };
 		6FC615501EA3C52100A6A517 /* FEPhotoListTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEPhotoListTest.m; sourceTree = "<group>"; };
 		6FC615521EA3C58E00A6A517 /* FESearchLogicTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FESearchLogicTest.m; sourceTree = "<group>"; };
-		6FC615541EA3C5C300A6A517 /* FEBaseModelTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEBaseModelTest.m; sourceTree = "<group>"; };
 		6FC615561EA3C60300A6A517 /* FEFlickrAPIDataProviderTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FEFlickrAPIDataProviderTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -154,6 +157,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		6F1EE68F1EA3CF3C001A7531 /* Mocks */ = {
+			isa = PBXGroup;
+			children = (
+				6F1EE6901EA3CF53001A7531 /* FEMockNSURLSession.h */,
+				6F1EE6911EA3CF53001A7531 /* FEMockNSURLSession.m */,
+			);
+			path = Mocks;
+			sourceTree = "<group>";
+		};
 		6F2D5E4A1E9E7B0C0038FFF5 = {
 			isa = PBXGroup;
 			children = (
@@ -177,6 +189,7 @@
 		6F2D5E551E9E7B0C0038FFF5 /* Flickr Explorer */ = {
 			isa = PBXGroup;
 			children = (
+				6F1EE68F1EA3CF3C001A7531 /* Mocks */,
 				6F8948111EA0C3BD0096B5A0 /* Helpers */,
 				6F2D5EAE1EA08FAE0038FFF5 /* Services */,
 				6F2D5EA81E9E9CDD0038FFF5 /* Views */,
@@ -373,7 +386,6 @@
 			isa = PBXGroup;
 			children = (
 				6FC615501EA3C52100A6A517 /* FEPhotoListTest.m */,
-				6FC615541EA3C5C300A6A517 /* FEBaseModelTest.m */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -382,6 +394,7 @@
 			isa = PBXGroup;
 			children = (
 				6FC615561EA3C60300A6A517 /* FEFlickrAPIDataProviderTest.m */,
+				6F1EE68D1EA3C880001A7531 /* FEJsonParserTest.m */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -534,6 +547,7 @@
 				6F1B40CE1EA32CF60029C586 /* FELoadingIndicatorView.m in Sources */,
 				6F8948171EA0CF200096B5A0 /* FEBaseModel.m in Sources */,
 				6F8948101EA0B2F90096B5A0 /* FEConfigurations.m in Sources */,
+				6F1EE6921EA3CF53001A7531 /* FEMockNSURLSession.m in Sources */,
 				6F2D5EB81EA08FAE0038FFF5 /* FEFlickrAPIDataProvider.m in Sources */,
 				6F2D5EAC1E9E9D730038FFF5 /* FEPhotoCollectionViewCell.m in Sources */,
 				6F89481F1EA2227B0096B5A0 /* FEMemoryCache.m in Sources */,
@@ -552,10 +566,10 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6F1EE68E1EA3C880001A7531 /* FEJsonParserTest.m in Sources */,
 				6FC615511EA3C52100A6A517 /* FEPhotoListTest.m in Sources */,
 				6FC615571EA3C60300A6A517 /* FEFlickrAPIDataProviderTest.m in Sources */,
 				6FC615531EA3C58E00A6A517 /* FESearchLogicTest.m in Sources */,
-				6FC615551EA3C5C300A6A517 /* FEBaseModelTest.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

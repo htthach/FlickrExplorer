@@ -7,8 +7,7 @@
 //
 
 #import "FEFlickrAPIDataProvider.h"
-#import "FEDataProvider.h"
-#import "FEImageProvider.h"
+
 #import "FEJsonParser.h"
 #import "FEJsonParser.h"
 #import "FEConfigurations.h"
@@ -82,25 +81,21 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
 
  @param parser the FEDataToObjectParser parser to use to parse api response NSData to Object
  @param url the base URL to use for all API request
- @param configuration the session configuration to use
- @param operationQueue the operation queue to run session tasks
+ @param session the session to use for data task
  @param apiResponseCache the api response cache to use. Pass nil if don't want to enable auto API caching.
  @param imageCache the image cache to use. Pass nil if don't want to enable auto image caching.
  @return an instance of FEFlickrAPIDataProvider
  */
 -(instancetype)initWithParser:(id<FEDataToObjectParser>) parser
                       baseURL:(NSURL *)url
-         sessionConfiguration:(NSURLSessionConfiguration *)configuration
-               operationQueue:(NSOperationQueue *) operationQueue
+                      session:(NSURLSession*) session
              apiResponseCache:(id<FEObjectCache>) apiResponseCache
                    imageCache:(id<FEObjectCache>) imageCache{
     self = [super init];
     if (self) {
         self.parser = parser;
         self.baseURL = url;
-        self.session = [NSURLSession sessionWithConfiguration:configuration
-                                                     delegate:nil
-                                                delegateQueue:operationQueue];
+        self.session = session;
         self.apiResponseCache = apiResponseCache;
         self.imageCache = imageCache;
     }
@@ -125,10 +120,13 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
         apiResponseCache = [[FEMemoryCache alloc] initWithSize:FE_SMALL_CACHE_SIZE];
     }
     
+    NSURLSession *session = [NSURLSession sessionWithConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
+                                  delegate:nil
+                             delegateQueue:[[NSOperationQueue alloc] init]];
+    
     return [[FEFlickrAPIDataProvider alloc] initWithParser:[FEJsonParser new]
                                                    baseURL:[FEFlickrAPIDataProvider flickrBaseURL]
-                                      sessionConfiguration:[NSURLSessionConfiguration defaultSessionConfiguration]
-                                            operationQueue:[[NSOperationQueue alloc] init]
+                                                   session:session
                                           apiResponseCache:apiResponseCache
                                                 imageCache:imageCache
             ];
@@ -273,10 +271,14 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
  @param param query param to construct the end point
  @return the endpoint following Flickr API documentation
  */
--(NSString*) endPointForParams:(NSDictionary*) param{
+-(NSString*) endPointForParams:(NSDictionary<NSString *, NSString *>*) param{
     NSURLComponents *components = [NSURLComponents componentsWithString:@"rest"];
     NSMutableArray *queryItems = [NSMutableArray array];
-    for (NSString *key in param) {
+    NSArray *sortedKeys = [[param allKeys] sortedArrayUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        return [(NSString*) obj1 compare:(NSString*) obj2];
+    }];
+    
+    for (NSString *key in sortedKeys) {
         NSString *value = param[key];
         if (![FEHelper isEmptyString:key] && ![FEHelper isEmptyString:value]) {
             //only add query item if valid string

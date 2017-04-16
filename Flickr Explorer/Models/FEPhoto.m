@@ -25,7 +25,6 @@
     [keyMap setObject:@"dateUploaded" forKey:@"dateuploaded"];
     return keyMap;
 }
-
 /**
  Check if two photos are the same. Currently we only consider photo id
  

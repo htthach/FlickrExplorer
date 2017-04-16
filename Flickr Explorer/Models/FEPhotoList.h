@@ -54,4 +54,13 @@
  @return a new photo list that contain only photos matching filter tags.
  */
 -(FEPhotoList*) photoListFilteredWithTags:(NSArray<NSString*>*) tags;
+
+
+/**
+ Check if this list contain a photo
+
+ @param photo photo to check
+ @return YES if there is a same photo in the list
+ */
+-(BOOL) containsPhoto:(FEPhoto*) photo;
 @end
