@@ -186,6 +186,9 @@ static CGFloat const FE_GRID_MARGIN   = 5;
     [self.tagBanner updateTags: [self.searchLogic searchResultPopularTags:FE_MAX_TAG_COUNT]];
     [self resetContent];
 }
+-(void)searchLogicDidFilterResult{
+    [self resetContent];
+}
 -(void)searchLogicDidFetchMoreResult{
     [self.collectionView reloadData];
 }
@@ -250,6 +253,7 @@ static CGFloat const FE_GRID_MARGIN   = 5;
 }
 
 #pragma mark - UISearchBarDelegate
+
 - (void)searchBarSearchButtonClicked:(UISearchBar *)searchBar {
     [self performSearchWithText:searchBar.text];
     self.searchBar.showsCancelButton = NO;
@@ -265,16 +269,20 @@ static CGFloat const FE_GRID_MARGIN   = 5;
     [searchBar resignFirstResponder];
 }
 #pragma mark - FETagSelectionViewDelegate
--(void) tagSelectionViewDidSelectTag:(NSString*) tag{
-    [self.searchLogic filterResultByTag:tag];
+
+-(void) tagSelectionViewDidSelectTags:(NSArray *)tags{
+    [self.searchLogic filterResultByTags:tags];
     [self resetContent];
 }
+
 -(void) tagSelectionViewDidClearTagSelection{
-    [self.searchLogic filterResultByTag: nil];
+    [self.searchLogic filterResultByTags: nil];
     [self resetContent];
 }
--(void) tagSelectionViewDidChooseSearchWithTag:(NSString*) tag{
-    [self.searchLogic searchPhotoWithTag:tag];
+
+-(void) tagSelectionViewDidChooseSearchWithTags:(NSArray *)tags{
+    self.searchBar.text = @"";
+    [self.searchLogic searchPhotoWithTags:tags];
 }
 
 -(void) tagSelectionViewNeedUpdateHeight:(CGFloat) height{

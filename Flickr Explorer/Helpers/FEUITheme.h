@@ -11,4 +11,5 @@
 @interface FEUITheme : NSObject
 +(UIColor *) primaryColorDark;
 +(UIColor *) primaryColorLight;
++(UIColor *) secondaryColorDark;
 @end

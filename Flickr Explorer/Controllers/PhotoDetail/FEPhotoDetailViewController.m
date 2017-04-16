@@ -13,6 +13,8 @@
 #import "FEHelper.h"
 #import "FEPhotoInfoResult.h"
 #import "FELoadingIndicatorView.h"
+#import "FEUITheme.h"
+
 @interface FEPhotoDetailViewController () <UIScrollViewDelegate>
 @property (weak, nonatomic) IBOutlet UIScrollView   *scrollView;
 @property (weak, nonatomic) IBOutlet UIImageView    *imageView;
@@ -48,6 +50,7 @@
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     [self setupScrollView];
+    self.infoContainer.backgroundColor = [FEUITheme primaryColorDark];
     self.loadingIndicator = [[FELoadingIndicatorView alloc] initFullyInside:self.infoContainer];
     [self loadPhotoInfo];
     [self loadImageForSize: FEPhotoSizeLarge];

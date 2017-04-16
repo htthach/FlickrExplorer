@@ -29,7 +29,11 @@
     // Initialization code
 }
 
-
+-(void)prepareForReuse{
+    [super prepareForReuse];
+    [self.imageView setImage:[FEHelper imagePlaceholder]];
+    self.photoToShow = nil;
+}
 /**
  Show a photo in this cell using the given info
  

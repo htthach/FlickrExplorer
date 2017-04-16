@@ -14,11 +14,13 @@
  */
 @interface FEConfigurations : NSObject
 
-//secrets
+#pragma mark - secrets
+
 +(NSString*) flickrAPIKey;
 +(NSString*) flickrAPISecret;
 
-//config
+#pragma mark - configuration
+
 +(NSString *) baseURLStringForFlickrAPI;
 
 

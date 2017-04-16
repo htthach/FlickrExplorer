@@ -8,9 +8,9 @@
 
 #import <UIKit/UIKit.h>
 @protocol FETagSelectionViewDelegate
--(void) tagSelectionViewDidSelectTag:(NSString*) tag;
+-(void) tagSelectionViewDidSelectTags:(NSArray<NSString*>*) tags;
 -(void) tagSelectionViewDidClearTagSelection;
--(void) tagSelectionViewDidChooseSearchWithTag:(NSString*) tag;
+-(void) tagSelectionViewDidChooseSearchWithTags:(NSArray<NSString*>*) tags;
 -(void) tagSelectionViewNeedUpdateHeight:(CGFloat) height;
 @end
 
@@ -26,7 +26,7 @@
 
  @param tags tag to set
  */
--(void) updateTags:(NSArray*) tags;
+-(void) updateTags:(NSArray<NSString*>*) tags;
 
 
 /**

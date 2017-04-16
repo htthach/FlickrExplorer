@@ -41,9 +41,17 @@ typedef NS_ENUM(NSInteger, FEPhotoSize) {
 
 
 /**
+ Check if this photo match some of the tags. Empty tags match with all photos
+
+ @param tags tags to check
+ @return YES if this photo contains any of those tags
+ */
+-(BOOL) containsTags:(NSArray<NSString*>*) tags;
+
+/**
  Separate tags properties into an array of tags
 
  @return an array of tags
  */
--(NSArray*) tagArray;
+-(NSArray<NSString*>*) tagArray;
 @end

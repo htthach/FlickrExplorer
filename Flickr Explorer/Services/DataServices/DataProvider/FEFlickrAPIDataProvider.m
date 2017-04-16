@@ -33,7 +33,7 @@ static NSString * const FE_ENDPOINT_PARAM_SECRET            = @"secret";
 //param value
 
 static NSString * const FE_ENDPOINT_VALUE_TAG               = @"tags";
-static NSString * const FE_ENDPOINT_VALUE_PER_PAGE          = @"50"; //fetch 50 result per page
+static NSString * const FE_ENDPOINT_VALUE_PER_PAGE          = @"80"; //fetch 80 result per page
 
 
 //flick URL template
@@ -226,17 +226,14 @@ static NSString * const FE_API_PHOTO_INFO_METHOD            = @"flickr.photos.ge
                                              }
                                              
                                              //download completed, convert to image
-                                             dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                 UIImage *image = [UIImage imageWithData:data];
-                                                 [self.imageCache cacheObject:image ofSize:[data length] forKey:imageUrl.absoluteString];
-                                                 
-                                                 if (success) {
-                                                     dispatch_async(dispatch_get_main_queue(), ^{
-                                                         success(image);
-                                                     
-                                                     });
-                                                 }
-                                             });
+                                             UIImage *image = [UIImage imageWithData:data];
+                                             [self.imageCache cacheObject:image ofSize:[data length] forKey:imageUrl.absoluteString];
+                                             
+                                             if (success) {
+                                                 dispatch_async(dispatch_get_main_queue(), ^{
+                                                     success(image);
+                                                 });
+                                             }
                                          }];
     [dataTask resume];
 }

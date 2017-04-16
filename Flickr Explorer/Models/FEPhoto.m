@@ -7,7 +7,7 @@
 //
 
 #import "FEPhoto.h"
-
+#import "FEHelper.h"
 @implementation FEPhoto
 /**
  Return the key map between json key vs this object property name. By default we set property name same as json tag.
@@ -37,13 +37,39 @@
     }
     return NO;
 }
+/**
+ Check if this photo match some of the tags. Empty tags match with all photos
+ 
+ @param tags tags to check
+ @return YES if this photo contains any of those tags
+ */
+-(BOOL) containsTags:(NSArray<NSString*>*) tags{
+    if ([tags count] == 0) {
+        return YES; //empty tag match with all photos
+    }
+    
+    NSSet *myTagSet = [NSSet setWithArray:[self tagArray]];
+    NSSet *filterSet = [NSSet setWithArray:tags];
+    
+    //photo is considered contain tags if there is an intersection
+    return [myTagSet intersectsSet:filterSet];
+}
 
 /**
  Separate tags properties into an array of tags
  
  @return an array of tags
  */
--(NSArray*) tagArray{
-    return [self.tags componentsSeparatedByString:@" "];
+-(NSArray<NSString*>*) tagArray{
+    if (self.tags) {
+        NSMutableArray *tagArray = [[self.tags componentsSeparatedByString:@" "] mutableCopy];
+        [tagArray removeObject:@" "];
+        [tagArray removeObject:@","];
+        [tagArray removeObject:@"."];
+        return [NSArray arrayWithArray:tagArray];
+    }
+    else {
+        return [NSArray new];
+    }
 }
 @end

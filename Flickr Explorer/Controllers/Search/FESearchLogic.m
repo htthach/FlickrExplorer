@@ -10,12 +10,15 @@
 #import "FEDataProvider.h"
 #import "FEPhoto.h"
 #import "FESearchResult.h"
+#import "FEPhotoList.h"
 
 @interface FESearchLogic ()
 @property (nonatomic, strong) NSString          *searchText;
 @property (nonatomic, strong) FESearchResult    *searchResult;
+@property (nonatomic, strong) FESearchResult    *filteredResult;
 @property (nonatomic)         NSInteger         currentPage;
 @property (nonatomic)         BOOL              loadingMore;
+@property (nonatomic, strong) NSArray<NSString*> *currentFilter;
 @end
 
 @implementation FESearchLogic
@@ -41,6 +44,7 @@
  @param text the input text to search photo
  */
 -(void) searchPhotoWithText:(NSString*) text{
+    self.currentFilter = nil;
     self.searchText = text;
     self.currentPage = [FESearchResult startingPageIndex];
     [self.dataProvider searchPhotoWithText:text
@@ -49,6 +53,7 @@
         if ([self.searchText isEqualToString:text]) {
             //only update if still searching for the same text
             self.searchResult = searchResult;
+            self.filteredResult = searchResult; //initially, no filtering
             [self.delegate searchLogicDidRefreshResult];
         }
     } fail:^(NSError *error) {
@@ -56,13 +61,14 @@
     }];
 }
 
+
 /**
- Start searching for photo given the selected tag
+ Start searching for photo given the selected tags
  
- @param tag tag to search photo by
+ @param tags tags to search photo by
  */
--(void) searchPhotoWithTag:(NSString*) tag{
-    [self searchPhotoWithText:tag];
+-(void) searchPhotoWithTags:(NSArray<NSString*>*) tags{
+    [self searchPhotoWithText:[tags firstObject]];
 }
 
 /**
@@ -83,7 +89,7 @@
                                            self.loadingMore = NO;
                                            if ([self.searchText isEqualToString:text]) {
                                                //only update if still searching for the same text
-                                               [self.searchResult appendSearchResult:searchResult];
+                                               [self.searchResult.photos appendPhotoList:searchResult.photos];
                                                [self.delegate searchLogicDidFetchMoreResult];
                                            }
                                        } fail:^(NSError *error) {
@@ -100,7 +106,7 @@
  @return Number of photo to show from search result
  */
 -(NSInteger) numberOfPhotosToShow{
-    return [self.searchResult numberOfPhotos];
+    return [self.filteredResult.photos numberOfPhotos];
 }
 
 /**
@@ -110,16 +116,20 @@
  @return a photo of the search result at an index
  */
 -(FEPhoto*) photoToDisplayAtIndex:(NSInteger) index{
-    return [self.searchResult getPhotoAtIndex: index];
+    return [self.filteredResult.photos photoAtIndex:index];
 }
 
+
+
 /**
- From now on, all search result will be filtered by this tag.
+ From now on, all search result will be filtered by these tags.
  
- @param tag tag to filter result by. If pass nil, clear all tag filter.
+ @param tags tag to filter result by. If pass nil, clear all tag filter.
  */
--(void) filterResultByTag:(NSString*) tag{
-    
+-(void) filterResultByTags:(NSArray<NSString*>*) tags{
+    self.currentFilter = tags;
+    self.filteredResult = [self.searchResult resultFilteredWithTags: tags];
+    [self.delegate searchLogicDidFilterResult];
 }
 
 
@@ -130,7 +140,7 @@
  @return the most popular tag from the search result.
  */
 -(NSArray*) searchResultPopularTags:(NSInteger) count{
-    return @[@"Flower", @"Sushi", @"Sashimi", @"Chicken"];
+    return [self.searchResult.photos mostPopularTag:count];
 }
 
 @end

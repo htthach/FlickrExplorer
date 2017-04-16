@@ -8,7 +8,7 @@
 
 #import "FEPhotoList.h"
 #import "FEPhoto.h"
-
+#import "FEHelper.h"
 @implementation FEPhotoList
 /**
  Return the key map between json key vs this object property name. By default we set property name same as json tag.
@@ -19,6 +19,7 @@
 -(NSMutableDictionary *)getKeyMap{
     NSMutableDictionary *keyMap = [super getKeyMap];
     [keyMap setObject:@"perPage" forKey:@"perpage"];
+    [keyMap setObject:@"photos" forKey:@"photo"];
     return keyMap;
 }
 /**
@@ -28,7 +29,7 @@
  @return class of the array's elements
  */
 -(Class) getClassForArrayName:(NSString*) arrayName{
-    if ([arrayName isEqualToString:@"photo"]) {
+    if ([arrayName isEqualToString:@"photos"]) {
         return [FEPhoto class];
     }
     return [super getClassForArrayName:arrayName];
@@ -40,7 +41,7 @@
  @return Return number of photo in this result
  */
 -(NSInteger) numberOfPhotos{
-    return [self.photo count];
+    return [self.photos count];
 }
 
 /**
@@ -50,8 +51,8 @@
  @return a photo at an index from this list
  */
 -(FEPhoto*) photoAtIndex:(NSInteger) index{
-    if (index >= 0 && index < [self.photo count]) {
-        return self.photo[index];
+    if (index >= 0 && index < [self.photos count]) {
+        return self.photos[index];
     }
     return nil;
 }
@@ -62,7 +63,7 @@
  @param otherPhotos the other photo list to append
  */
 -(void) appendPhotoList:(FEPhotoList*) otherPhotos{
-    if ([otherPhotos.photo count] <= 0) {
+    if ([otherPhotos.photos count] <= 0) {
         return;//nothing to do
     }
     
@@ -71,15 +72,74 @@
     self.pages = otherPhotos.pages;
     
     //if this list is empty, just use the other list
-    if (!self.photo) {
-        self.photo = otherPhotos.photo;
+    if (!self.photos) {
+        self.photos = otherPhotos.photos;
         return;
     }
     
     //combine
-    NSMutableArray *combined = [NSMutableArray arrayWithArray:self.photo];
-    [combined addObjectsFromArray: otherPhotos.photo];
+    NSMutableArray *combined = [NSMutableArray arrayWithArray:self.photos];
+    [combined addObjectsFromArray: otherPhotos.photos];
     
-    self.photo = [NSArray arrayWithArray:combined];
+    self.photos = [NSArray arrayWithArray:combined];
+}
+
+
+/**
+ Get most popular tags in the photo list
+ 
+ @param count max count of the return list
+ @return most popular tags in the photo list
+ */
+-(NSArray<NSString*>*) mostPopularTag:(NSUInteger) count{
+    
+    //create a tag count
+    NSMutableDictionary *tagCount = [NSMutableDictionary dictionary];
+    for (FEPhoto *photo in self.photos) {
+        NSArray *tags = [photo tagArray];
+        for (NSString *tag in tags) {
+            if (![FEHelper isEmptyString:tag]) {
+                NSNumber *currentCount = tagCount[tag];
+                if (!currentCount) {
+                    tagCount[tag] = @(1);
+                }
+                else {
+                    tagCount[tag] = [NSNumber numberWithInteger:([currentCount integerValue] + 1)];
+                }
+            }
+        }
+    }
+    
+    //sort desc
+    NSArray *sortedTags = [tagCount keysSortedByValueUsingComparator:^NSComparisonResult(id  _Nonnull obj1, id  _Nonnull obj2) {
+        return [((NSNumber*) obj2) compare:(NSNumber*) obj1]; //sort desc
+    }];
+    
+    
+    //get top count tags
+    NSInteger resultCount = MIN(count, [sortedTags count]);
+    return [sortedTags subarrayWithRange:NSMakeRange(0, resultCount)];
+}
+
+
+/**
+ Create new photo list that contain only photos matching filter tags.
+ 
+ @param tags tags to filter the photo list by
+ @return a new photo list that contain only photos matching filter tags.
+ */
+-(FEPhotoList*) photoListFilteredWithTags:(NSArray<NSString*>*) tags{
+    NSMutableArray *matchingPhotos = [NSMutableArray array];
+    for (FEPhoto *photo in self.photos) {
+        if ([photo containsTags:tags]) {
+            [matchingPhotos addObject:photo];
+        }
+    }
+    FEPhotoList *result = [FEPhotoList new];
+    result.photos = [NSArray arrayWithArray:matchingPhotos];
+    result.page = self.page;
+    result.pages = self.pages;
+    result.perPage = self.perPage;
+    return result;
 }
 @end

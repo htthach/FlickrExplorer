@@ -20,25 +20,6 @@
 }
 
 /**
- Return number of photo in this result
- 
- @return Return number of photo in this result
- */
--(NSInteger) numberOfPhotos{
-    return [self.photos numberOfPhotos];
-}
-
-/**
- Get a photo at an index from the photos in this result
- 
- @param index index of the requested photo
- @return a photo at an index from the photos in this result
- */
--(FEPhoto*) getPhotoAtIndex:(NSInteger) index{
-    return [self.photos photoAtIndex:index];
-}
-
-/**
  Check if has more result after a result page
  
  @param pageIndex the page to check
@@ -49,11 +30,14 @@
 }
 
 /**
- Append other search result into this result by merging the photo list
+ Create new result that contain only photos matching filter tags.
  
- @param otherResult the other search result to append
+ @param tags tag to filter the result by
+ @return a new result that contain only photos matching a filter tags.
  */
--(void) appendSearchResult:(FESearchResult*) otherResult{
-    [self.photos appendPhotoList: otherResult.photos];
+-(FESearchResult*) resultFilteredWithTags:(NSArray<NSString*>*) tags{
+    FESearchResult *result = [FESearchResult new];
+    result.photos = [self.photos photoListFilteredWithTags:tags];
+    return result;
 }
 @end

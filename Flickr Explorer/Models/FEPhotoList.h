@@ -10,7 +10,7 @@
 #import "FEBaseModel.h"
 @class FEPhoto;
 @interface FEPhotoList : FEBaseModel
-@property (nonatomic, strong) NSArray *photo;
+@property (nonatomic, strong) NSArray<FEPhoto *> *photos;
 @property (nonatomic, copy) NSNumber  *page;
 @property (nonatomic, copy) NSNumber  *pages;
 @property (nonatomic, copy) NSNumber  *perPage;
@@ -37,4 +37,21 @@
  @param otherPhotos the other photo list to append
  */
 -(void) appendPhotoList:(FEPhotoList*) otherPhotos;
+
+
+/**
+ Get most popular tags in the photo list
+
+ @param count max count of the return list
+ @return most popular tags in the photo list
+ */
+-(NSArray<NSString*>*) mostPopularTag:(NSUInteger) count;
+
+/**
+ Create new photo list that contain only photos matching filter tags.
+ 
+ @param tags tags to filter the photo list by
+ @return a new photo list that contain only photos matching filter tags.
+ */
+-(FEPhotoList*) photoListFilteredWithTags:(NSArray<NSString*>*) tags;
 @end

@@ -13,6 +13,7 @@
 @protocol FESearchLogicDelegate <NSObject>
 
 -(void) searchLogicDidRefreshResult;
+-(void) searchLogicDidFilterResult;
 -(void) searchLogicDidFetchMoreResult;
 -(void) searchLogicEncounteredError:(NSError*) error;
 
@@ -43,11 +44,11 @@
 -(void) searchPhotoWithText:(NSString*) text;
 
 /**
- Start searching for photo given the selected tag
+ Start searching for photo given the selected tags
  
- @param tag tag to search photo by
+ @param tags tags to search photo by
  */
--(void) searchPhotoWithTag:(NSString*) tag;
+-(void) searchPhotoWithTags:(NSArray<NSString*>*) tags;
 
 /**
  Fetch more search result from current search criteria
@@ -71,11 +72,11 @@
 
 
 /**
- From now on, all search result will be filtered by this tag.
+ From now on, all search result will be filtered by these tags.
 
- @param tag tag to filter result by. If pass nil, clear all tag filter.
+ @param tags tag to filter result by. If pass nil, clear all tag filter.
  */
--(void) filterResultByTag:(NSString*) tag;
+-(void) filterResultByTags:(NSArray<NSString*>*) tags;
 
 
 /**
